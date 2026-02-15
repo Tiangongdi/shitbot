@@ -1,0 +1,24 @@
+{
+  "common_models": [
+    {"name": "OPENAI", "value": "openai"},
+    {"name": "CHATGPT", "value": "chatgpt"},
+    {"name": "ANTHROPIC", "value": "anthropic"},
+    {"name": "GEMINI", "value": "gemini"},
+    {"name": "COHERE", "value": "cohere"},
+    {"name": "MISTRAL", "value": "mistral"},
+    {"name": "HUGGINGFACE", "value": "huggingface"},
+    {"name": "OLLAMA", "value": "ollama"},
+    {"name": "GROQ", "value": "groq"},
+    {"name": "PERPLEXITY", "value": "perplexity"},
+    {"name": "AZURE", "value": "azure"},
+    {"name": "DEEPSEEK", "value": "deepseek"},
+    {"name": "MOONSHOT", "value": "moonshot"},
+    {"name": "RUNWAYML", "value": "runwayml"},
+    {"name": "REPLICATE", "value": "replicate"},
+    {"name": "TOGETHER_AI", "value": "together_ai"},
+    {"name": "AWS_POLLY", "value": "aws_polly"},
+    {"name": "VERTEX_AI", "value": "vertex_ai"},
+    {"name": "BEDROCK", "value": "bedrock"},
+    {"name": "AI21", "value": "ai21"}
+  ]
+}
