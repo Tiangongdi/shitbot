@@ -122,7 +122,7 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持多种 AI A
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourusername/ShitBot.git
+git clone https://gitee.com/shitbot/shit-bot.git
 cd ShitBot
 ```
 

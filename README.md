@@ -122,7 +122,7 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 ### 1. Clone the Project
 
 ```bash
-git clone https://github.com/yourusername/ShitBot.git
+git clone https://gitee.com/shitbot/shit-bot.git
 cd ShitBot
 ```
 
