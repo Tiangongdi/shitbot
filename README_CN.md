@@ -238,7 +238,6 @@ ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档
 | [COMMAND_TOOLS](Docs/COMMAND_TOOLS.md) | 命令行工具使用指南 |
 | [EMAIL_TOOLS](Docs/EMAIL_TOOLS.md) | 邮件工具使用指南 |
 | [TIMER_TOOLS](Docs/TIMER_TOOLS.md) | 计时器工具使用指南 |
-| [INPUT_TOOLS](Docs/INPUT_TOOLS.md) | 输入工具使用指南 |
 | [AI_API_Platforms_OpenAI_SDK_Compatible](Docs/AI_API_Platforms_OpenAI_SDK_Compatible.md) | AI API 平台兼容性文档 |
 
 ### 🔧 工具概览
@@ -468,7 +467,6 @@ ShitBot/
 │   ├── COMMAND_TOOLS.md    # 命令工具指南
 │   ├── EMAIL_TOOLS.md      # 邮件工具指南
 │   ├── TIMER_TOOLS.md      # 定时器工具指南
-│   ├── INPUT_TOOLS.md      # 输入工具指南
 │   ├── AI_API_Platforms_OpenAI_SDK_Compatible.md  # AI API 平台兼容性文档
 │   └── Write_Doc.md        # 文档编写指南
 ├── Skills/                 # 技能目录
