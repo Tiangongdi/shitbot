@@ -60,7 +60,7 @@ daily_at(hour=8, task="发送日报")
 daily_at(hour=23, minute=30, task="执行夜间备份")
 ```
 
-## cancel - 取消定时任务
+## cancel_timer - 取消定时任务
 
 ### 工具介绍
 取消指定的定时任务。
@@ -71,10 +71,10 @@ daily_at(hour=23, minute=30, task="执行夜间备份")
 ### 使用示例
 ```
 # 取消指定任务
-cancel(task_id="task_123456")
+cancel_timer(task_id="task_123456")
 ```
 
-## pause - 暂停定时任务
+## pause_timer - 暂停定时任务
 
 ### 工具介绍
 暂停指定的定时任务，暂停后可以恢复。
@@ -85,10 +85,10 @@ cancel(task_id="task_123456")
 ### 使用示例
 ```
 # 暂停指定任务
-pause(task_id="task_123456")
+pause_timer(task_id="task_123456")
 ```
 
-## resume - 恢复定时任务
+## resume_timer - 恢复定时任务
 
 ### 工具介绍
 恢复已暂停的定时任务。
@@ -99,7 +99,7 @@ pause(task_id="task_123456")
 ### 使用示例
 ```
 # 恢复指定任务
-resume(task_id="task_123456")
+resume_timer(task_id="task_123456")
 ```
 
 ## list - 列出所有定时任务
@@ -149,6 +149,7 @@ interval(interval_seconds=300, interval_count=12, task="处理队列任务")
 3. **资源占用**: 无限次执行的任务可能会占用较多系统资源
 4. **任务描述**: 任务描述应清晰明了，便于后续管理
 5. **时间范围**: daily_at 的小时参数必须在 0-23 范围内
+6. **安全性**: 定时任务中包含文件删除操作将被拒绝
 
 ## 最佳实践
 
@@ -157,6 +158,7 @@ interval(interval_seconds=300, interval_count=12, task="处理队列任务")
 3. **定期清理**: 及时取消不再需要的定时任务
 4. **错误处理**: 在任务执行时考虑异常情况的处理
 5. **日志记录**: 重要任务建议添加日志记录功能
+6. **避免危险操作**: 不要在定时任务中执行删除文件等危险操作
 
 ## 快速参考
 
@@ -165,9 +167,9 @@ interval(interval_seconds=300, interval_count=12, task="处理队列任务")
 | once_after | 一次性延迟执行 | time, task |
 | interval | 周期性执行 | interval_seconds, interval_count, task |
 | daily_at | 每日定时执行 | hour, minute, task |
-| cancel | 取消任务 | task_id |
-| pause | 暂停任务 | task_id |
-| resume | 恢复任务 | task_id |
+| cancel_timer | 取消任务 | task_id |
+| pause_timer | 暂停任务 | task_id |
+| resume_timer | 恢复任务 | task_id |
 | list | 列出所有任务 | 无 |
 
 ## 常见问题
@@ -176,10 +178,19 @@ interval(interval_seconds=300, interval_count=12, task="处理队列任务")
 A: 使用 `list()` 工具可以查看所有定时任务及其状态。
 
 **Q: 如何停止一个无限循环的任务？**
-A: 使用 `cancel(task_id)` 工具取消任务，或使用 `pause(task_id)` 暂停任务。
+A: 使用 `cancel_timer(task_id)` 工具取消任务，或使用 `pause_timer(task_id)` 暂停任务。
 
 **Q: 可以同时运行多个定时任务吗？**
 A: 可以，计时器工具支持同时运行多个定时任务。
 
 **Q: 任务执行失败会自动重试吗？**
 A: 不会，如果需要重试机制，需要在任务描述中自行实现。
+
+**Q: 工具名称为什么有后缀？**
+A: 为了避免命名冲突，取消、暂停、恢复工具使用了 `_timer` 后缀，如 `cancel_timer`、`pause_timer`、`resume_timer`。
+
+---
+
+*文档版本: 2.0*  
+*最后更新: 2026-03-15*  
+*咕咕嘎嘎！*
