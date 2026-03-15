@@ -28,7 +28,7 @@
 
 ## 🎯 项目简介
 
-ShitBot 是一个功能强大的 AI 智能助手终端应用，支持多种 AI API（智谱AI、博查），具备完整的浏览器自动化、文件操作、定时任务、邮件发送等能力。用户可以通过类似 Claude Code 的终端界面与 AI 进行自然对话，并指示 AI 完成各种复杂任务。
+ShitBot 是一个功能强大的 AI 智能助手终端应用，支持多种 AI API（智谱AI、博查），具备完整的浏览器自动化、文件操作、定时任务、邮件发送、代码执行等能力。用户可以通过类似 Claude Code 的终端界面与 AI 进行自然对话，并指示 AI 完成各种复杂任务。
 
 **主要亮点：**
 - 🤖 多 AI 提供商支持（智谱AI GLM、博查搜索）
@@ -40,6 +40,7 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持多种 AI A
 - 📚 内置文档系统
 - 🔧 可扩展的技能系统（Skills）
 - 🎭 灵活的角色系统（Roles）
+- 🐍 Python代码执行能力
 - 🎨 现代化终端界面
 
 ---
@@ -62,10 +63,17 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持多种 AI A
 
 ### 📁 文件操作
 - 文件读写操作
+- 文件追加内容
 - 文件复制和移动
 - 目录创建和管理
 - 安全的文件删除（需用户确认）
 - 禁止路径保护机制
+
+### 🐍 代码执行
+- 运行Python代码片段
+- 执行Python代码文件
+- 实时代码测试和验证
+- 支持复杂项目脚本
 
 ### ⏰ 定时任务系统
 - 一次性延迟执行
@@ -237,16 +245,21 @@ ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档
 
 #### 网络搜索模块
 - `search_web` - 网络搜索
-- `browse_page` - 网页浏览与内容提取
+- `webbot_task` - 浏览器任务执行
 
 #### 文件操作模块
 - `read_file` - 读取文件
 - `write_file` - 写入文件
+- `append_to_file` - 追加文件内容
 - `copy_file` - 复制文件
 - `move_file` - 移动文件
 - `delete_file` - 删除文件
 - `create_dir` - 创建目录
 - `get_dir_content` - 获取目录内容
+
+#### 代码执行模块
+- `run_code` - 运行Python代码
+- `run_code_file` - 运行Python代码文件
 
 #### 系统命令模块
 - `shell_command` - 执行 shell 命令
@@ -258,14 +271,10 @@ ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档
 - `once_after` - 一次性延迟执行
 - `interval` - 周期性执行
 - `daily_at` - 每日定时执行
-- `cancel` - 取消定时任务
-- `pause` - 暂停定时任务
-- `resume` - 恢复定时任务
+- `cancel_timer` - 取消定时任务
+- `pause_timer` - 暂停定时任务
+- `resume_timer` - 恢复定时任务
 - `list` - 列出所有定时任务
-
-#### 用户交互模块
-- `input` - 用户输入
-- `input_y_or_n` - 用户确认
 
 #### 记忆管理模块
 - `save_memory` - 保存当前对话记忆
@@ -274,6 +283,12 @@ ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档
 #### 文档管理模块
 - `get_doc_list` - 列出所有可阅读文档
 - `get_doc` - 获取文档内容
+
+#### 角色管理模块
+- `get_role` - 列出所有角色
+
+#### 技能管理模块
+- `get_skill` - 列出所有技能
 
 ---
 
@@ -287,6 +302,21 @@ ShitBot 支持模块化的技能扩展系统，每个技能都是独立的功能
 |---------|------|
 | **skill-creator** | 创建或更新 AgentSkills，用于设计、构建和打包技能，来源: [openclaw](https://github.com/openclaw/openclaw) |
 | **role-skill** | 创建或更新 AgentRoles，用于定义角色的行为、技能和工具推荐 |
+| **bilibili-update-viewer** | 查看B站UP主的最新视频、动态，检查UP主今天是否更新 |
+| **clawhub** | 从ClawHub公共技能库搜索和安装技能 |
+| **docx** | Word文档操作，创建、读取、编辑.docx文件 |
+| **find-skills** | 帮助发现和安装新技能 |
+| **github-uploader** | GitHub项目上传助手 |
+| **idea-expander** | 项目灵感扩展工具 |
+| **market-research** | 项目市场调研分析工具 |
+| **ppt-generator** | PPT演示文稿生成工具 |
+| **proj-pilot** | 项目管理助手 |
+| **project-update** | 更新ShitBot项目代码流程 |
+| **self-improvement** | 持续学习和改进 |
+| **skill-vetter** | 安全性技能审查 |
+| **tech-selection-report** | 技术选型报告生成器 |
+| **ui-ux-pro-max** | UI/UX设计智能 |
+| **user-profile-generator** | 用户画像生成器 |
 
 ### 🎯 技能特点
 
@@ -309,7 +339,12 @@ ShitBot 支持灵活的角色系统，不同的角色具有不同的专业能力
 
 | 角色名称 | 说明 |
 |---------|------|
+| **Coder** | 代码编写角色 |
 | **GitHubUploader** | GitHub 上传助手角色，帮助用户管理 Git 仓库和 GitHub 项目 |
+| **MarketAnalyst** | 市场分析师角色，专注于项目市场调研和竞争分析 |
+| **SpringBootCoder** | SpringBoot开发者角色，专注于企业级SpringBoot应用开发 |
+| **UserProfiler** | 用户画像分析师角色，通过问题生成用户介绍 |
+| **VideoScriptWriter** | 视频脚本编写角色 |
 
 ### 🎨 角色特点
 
@@ -337,7 +372,8 @@ AI: 咕咕嘎嘎！你好呀！我是偷摸零，一个智能 AI 助手。我可
 3. 浏览网页
 4. 发送邮件
 5. 设置定时任务
-6. 使用各种技能和角色
+6. 运行Python代码
+7. 使用各种技能和角色
 ... 还有很多其他功能！
 
 有什么我可以帮助你的吗？
@@ -367,6 +403,17 @@ AI: 好的，我来读取这个文件。
 ...
 ```
 
+### 代码执行
+
+```
+You: 帮我运行一段Python代码
+
+AI: 好的，请告诉我代码内容。
+[调用 run_code 工具]
+代码执行结果：
+...
+```
+
 ### 定时任务
 
 ```
@@ -383,7 +430,7 @@ AI: 好的，我来帮你设置每天早上 9 点的提醒。
 You: 帮我打开百度并搜索"人工智能"
 
 AI: 好的，我来帮你打开百度并搜索"人工智能"。
-[调用 browse_page 工具]
+[调用 webbot_task 工具]
 正在访问百度...
 搜索结果已获取...
 ```
@@ -429,15 +476,38 @@ ShitBot/
 │   ├── skill-creator/      # 技能创建工具
 │   ├── role-skill/         # 角色创建工具
 │   ├── market-research/    # 市场调研技能
-│   └── github-uploader/    # GitHub 上传助手
+│   ├── github-uploader/    # GitHub 上传助手
+│   ├── bilibili-update-viewer/  # B站更新查看器
+│   ├── docx/               # Word文档操作
+│   ├── ppt-generator/      # PPT生成器
+│   ├── proj-pilot/         # 项目管理助手
+│   ├── project-update/     # 项目更新流程
+│   ├── self-improvement/   # 自我改进
+│   ├── skill-vetter/       # 技能审查
+│   ├── tech-selection-report/  # 技术选型报告
+│   ├── ui-ux-pro-max/      # UI/UX设计
+│   └── user-profile-generator/  # 用户画像生成器
 ├── Roles/                  # 角色目录
 │   ├── Coder/              # 代码编写角色
 │   ├── MarketAnalyst/      # 市场分析师角色
 │   ├── VideoScriptWriter/  # 视频脚本编写角色
-│   └── GitHubUploader/     # GitHub 上传助手角色
+│   ├── GitHubUploader/     # GitHub 上传助手角色
+│   ├── SpringBootCoder/    # SpringBoot开发者角色
+│   └── UserProfiler/       # 用户画像分析师角色
 ├── memory/                 # 记忆存储目录
 ├── prompt/                 # 提示词目录
 ├── tools/                  # 工具模块目录
+│   ├── bocha.py           # 博查搜索
+│   ├── doc.py             # 文档管理
+│   ├── memory_bot.py      # 记忆机器人
+│   ├── playwiright.py     # 浏览器自动化
+│   ├── role.py            # 角色管理
+│   ├── safe.py            # 安全检查
+│   ├── skill.py           # 技能管理
+│   ├── tavily_api.py      # Tavily搜索API
+│   ├── timer.py           # 定时任务
+│   ├── venv_manager.py    # 虚拟环境管理
+│   └── webbot.py          # WebBot
 ├── Logs/                   # 日志目录
 ├── ai.py                   # AI 客户端
 ├── bot.py                  # 机器人核心逻辑
@@ -529,6 +599,15 @@ browser:
 1. 检查 Skills 或 Roles 目录是否存在对应文件夹
 2. 确认 SKILL.md 或 ROLE.md 文件格式正确
 3. 查看文档了解如何创建自定义技能和角色
+
+### 8. Python代码执行失败
+
+**问题**：运行Python代码时出错
+
+**解决**：
+1. 确认代码语法正确
+2. 检查是否使用了未安装的第三方库
+3. 确认虚拟环境已正确激活
 
 ---
 
