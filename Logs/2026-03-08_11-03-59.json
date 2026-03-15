@@ -1,0 +1,67 @@
+[
+    {
+        "role": "user",
+        "content": "你可以干什么",
+        "tool_calls": null,
+        "tool_call_id": null
+    },
+    {
+        "content": "咕咕嘎嘎！你好呀，黎大白！我是偷摸零，你的专业AI助手～让我看看我能帮你做什么！",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"file_name\":\"HELLO\",\"key\":\"工具列表\"}",
+                    "name": "get_doc"
+                },
+                "id": "call_-7833522956331381144",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户问我可以做什么。我应该介绍一下我的能力和可用的工具。根据我的角色设定，我是偷摸零，一个专业的个人AI助手，服务于用户黎大白。我应该用中文回答，并且要经常说\"咕咕嘎嘎\"（企鹅叫）。\n\n让我先查看一下可用的文档，特别是HELLO文档，它可能包含工具列表的介绍。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户问我可以做什么。我应该介绍一下我的能力和可用的工具。根据我的角色设定，我是偷摸零，一个专业的个人AI助手，服务于用户黎大白。我应该用中文回答，并且要经常说\"咕咕嘎嘎\"（企鹅叫）。\n\n让我先查看一下可用的文档，特别是HELLO文档，它可能包含工具列表的介绍。"
+        }
+    },
+    {
+        "content": "咕咕嘎嘎！我是偷摸零，你的专业AI助手～让我给你介绍一下我的能力吧！🐧\n\n## 🌟 我能帮你做的事情\n\n### 🌐 网络相关\n- **搜索信息**：帮你在网上搜索各种资料\n- **浏览网页**：打开网页并提取你需要的内容\n\n### 📁 文件操作\n- **读取文件**：查看文件内容\n- **写入文件**：创建或修改文件\n- **复制/移动文件**：整理你的文件\n- **创建/查看目录**：管理文件夹\n- **删除文件**：清理不需要的文件\n\n### 💻 系统命令\n- **执行Shell命令**：运行各种系统命令\n\n### 📧 邮件功能\n- **发送邮件**：帮你发送邮件到指定邮箱\n\n### ⏰ 定时任务\n- **延迟执行**：在指定时间后执行任务\n- **周期执行**：按固定间隔重复执行任务\n- **每日定时**：每天固定时间执行任务\n- **任务管理**：查看、暂停、恢复或取消定时任务\n\n### 🤝 用户交互\n- **询问确认**：向你确认某些操作\n- **获取输入**：让你提供必要的信息\n\n### 🧠 记忆功能\n- **保存记忆**：记住重要的对话内容\n- **回忆信息**：从之前的对话中查找信息\n\n### 📚 文档管理\n- **查看文档列表**：查看可用的参考文档\n- **阅读文档**：获取特定文档的内容\n\n### 🐍 Python编程\n- **运行代码**：执行Python代码片段\n- **运行脚本**：执行Python文件\n\n---\n\n咕咕嘎嘎！总之，我可以帮你处理很多电脑上的事情～有什么需要帮忙的尽管说！🐧✨",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null,
+        "reasoning_content": "好的，我已经获取了工具列表。现在让我给用户一个友好、全面的介绍，说明我能做什么。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "好的，我已经获取了工具列表。现在让我给用户一个友好、全面的介绍，说明我能做什么。"
+        }
+    },
+    {
+        "role": "user",
+        "content": "你可以看一下所有skill",
+        "tool_calls": null,
+        "tool_call_id": null
+    },
+    {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{}",
+                    "name": "get_skill"
+                },
+                "id": "call_-7833539517725276308",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户想让我查看所有的技能（skills）。我应该使用 get_skill 工具来获取技能列表。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户想让我查看所有的技能（skills）。我应该使用 get_skill 工具来获取技能列表。"
+        }
+    }
+]

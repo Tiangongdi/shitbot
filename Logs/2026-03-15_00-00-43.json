@@ -1,0 +1,8 @@
+[
+    {
+        "role": "user",
+        "content": "定时任务:每日定时提醒",
+        "tool_calls": null,
+        "tool_call_id": null
+    }
+]

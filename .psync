@@ -1,0 +1,14 @@
+target: D:\project\ShitBot
+exclude:
+- ./config.yaml
+- .psync
+- ./Roles
+- '*.pyc'
+- .DS_Store
+- __pycache__
+- ./shitbot_env
+- .git
+- Thumbs.db
+- ./Skills
+- ./Logs
+- ./memeory

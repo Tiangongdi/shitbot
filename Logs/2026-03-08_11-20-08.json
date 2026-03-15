@@ -1,0 +1,29 @@
+[
+    {
+        "role": "user",
+        "content": "你有什么skill",
+        "tool_calls": null,
+        "tool_call_id": null
+    },
+    {
+        "content": "咕咕嘎嘎！让我看看我有什么技能～",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{}",
+                    "name": "get_skill"
+                },
+                "id": "call_-7833528110292136371",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户问我有什么skill（技能）。根据系统提示，我应该使用get_skill工具来列出所有可以阅读的技能文档。让我调用这个工具来查看可用的技能列表。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户问我有什么skill（技能）。根据系统提示，我应该使用get_skill工具来列出所有可以阅读的技能文档。让我调用这个工具来查看可用的技能列表。"
+        }
+    }
+]

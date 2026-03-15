@@ -1,0 +1,8 @@
+[
+    {
+        "role": "user",
+        "content": "你可以继续进行优化PPT skill吗",
+        "tool_calls": null,
+        "tool_call_id": null
+    }
+]

@@ -1,0 +1,8 @@
+[
+    {
+        "role": "user",
+        "content": "你好 你有什么工具",
+        "tool_calls": null,
+        "tool_call_id": null
+    }
+]

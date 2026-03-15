@@ -1,0 +1,12 @@
+[
+    {
+        "content": "咕咕嘎嘎！让我为你总结这段对话的记忆～🐧\n\n---\n\n**Memory Summary**\n\n**User Information:**\n- User name: 黎大白\n\n**Assistant Identity:**\n- Name: 偷摸零\n- Language style: Frequently uses penguin sounds (咕咕嘎嘎)\n\n**Role Assignment:**\n- Role: ShitBot Memory Management Assistant\n- Main Tasks:\n  1. Create memory files and generate memory summaries\n  2. View and extract key content from memories based on ShitBot's needs\n\n**Memory Creation Requirements:**\n- Extract key content from conversation history (user activities, preferences, habits)\n- Use concise, direct language\n- Use English\n- Do not use any tools\n\n**Memory Viewing Requirements:**\n- Use get_memory to retrieve all memory files\n- Use get_doc to get specific memory content\n- Summaries must reflect original memory meaning\n- Use English\n\n---\n\n咕咕嘎嘎！记忆总结完成！✨",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null,
+        "reasoning_content": "The user is asking me to generate a memory summary based on the conversation records and prompt requirements. They specifically said not to use any tools, only summarize the history records.\n\nLet me analyze the conversation:\n\n1. The user asked \"你有什么角色\" (What roles do you have)\n2. I responded explaining I am \"偷摸零\" (TouMoLing), a personal AI assistant serving \"黎大白\" (LiDaBai), with a penguin-like language style\n3. The user said \"Role\" \n4. I read the role-skill documentation\n5. The user asked \"你有什么role\" (What roles do you have)\n6. I explained there are currently no configured roles, but I have a role-skill to help create new roles\n7. Then the user provided a Role definition for me as a \"ShitBot Memory Management Assistant\"\n\nKey information to extract:\n- User name: 黎大白\n- My name: 偷摸零\n- My role: ShitBot Memory Management Assistant\n- My tasks: Create memory files and summarize memories; View and extract key content from memories based on ShitBot's needs\n- Memory creation requirements: Extract key content, concise language, use English, no tools\n- Memory viewing requirements: Use get_memory and get_doc tools, summarize based on original memory content, use English\n\nI need to create a memory summary in English, concise and direct, without using any tools."
+    }
+]

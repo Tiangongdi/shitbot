@@ -1,0 +1,262 @@
+[
+    {
+        "role": "user",
+        "content": "D:\\project\\git下载项目\\nanobot 帮我讲解这个项目里面如何获取当前平台可以使用的模型列表",
+        "tool_calls": null,
+        "tool_call_id": null
+    },
+    {
+        "content": "咕咕嘎嘎！好的，让我来帮你探索这个 nanobot 项目，看看它是如何获取当前平台可用的模型列表的~",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890187421940184444",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户想了解 D:\\project\\git下载项目\\nanobot 这个项目中如何获取当前平台可以使用的模型列表。我需要先探索这个项目的结构，找到相关的代码。\n\n首先，我应该：\n1. 查看这个目录的内容，了解项目结构\n2. 寻找与模型列表相关的代码文件\n3. 分析相关代码，理解如何获取模型列表\n\n让我先看看这个目录的内容。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户想了解 D:\\project\\git下载项目\\nanobot 这个项目中如何获取当前平台可以使用的模型列表。我需要先探索这个项目的结构，找到相关的代码。\n\n首先，我应该：\n1. 查看这个目录的内容，了解项目结构\n2. 寻找与模型列表相关的代码文件\n3. 分析相关代码，理解如何获取模型列表\n\n让我先看看这个目录的内容。"
+        }
+    },
+    {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890194706204719138",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "让我先看看项目的主要结构，然后查看 nanobot 目录的内容。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "让我先看看项目的主要结构，然后查看 nanobot 目录的内容。"
+        }
+    },
+    {
+        "content": "",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\providers\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890191613828259908",
+                "type": "function"
+            },
+            {
+                "index": 1,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\README.md\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890191613828259907",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "让我看看 nanobot 目录下的结构，特别是 providers 目录，这可能是与模型提供者相关的部分。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "让我看看 nanobot 目录下的结构，特别是 providers 目录，这可能是与模型提供者相关的部分。"
+        }
+    },
+    {
+        "content": "让我深入查看 providers 目录下的关键文件：",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\providers\\\\registry.py\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890191785626954559",
+                "type": "function"
+            },
+            {
+                "index": 1,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\providers\\\\litellm_provider.py\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890191785626954558",
+                "type": "function"
+            },
+            {
+                "index": 2,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\providers\\\\base.py\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890191785626954557",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "好的，我看到了项目结构。用户想了解如何获取当前平台可以使用的模型列表。让我深入查看 providers 目录，特别是 registry.py 和 litellm_provider.py，这些文件应该包含模型列表相关的逻辑。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "好的，我看到了项目结构。用户想了解如何获取当前平台可以使用的模型列表。让我深入查看 providers 目录，特别是 registry.py 和 litellm_provider.py，这些文件应该包含模型列表相关的逻辑。"
+        }
+    },
+    {
+        "content": "让我继续探索 CLI 和配置相关的代码，看看模型列表是如何获取的~",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\cli\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890190273798468606",
+                "type": "function"
+            },
+            {
+                "index": 1,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\config\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890190273798468605",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "好的，用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，看看是否有相关的功能实现。\n\n从目前看到的代码来看：\n1. `registry.py` 定义了所有支持的 provider 及其配置\n2. `litellm_provider.py` 是主要的 LLM 提供者实现\n3. `base.py` 定义了基础的 LLM 提供者接口\n\n但我还没有看到获取模型列表的具体实现。让我继续查看 CLI 相关的代码，看看 `nanobot status` 命令是如何工作的，以及是否有获取模型列表的功能。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "好的，用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，看看是否有相关的功能实现。\n\n从目前看到的代码来看：\n1. `registry.py` 定义了所有支持的 provider 及其配置\n2. `litellm_provider.py` 是主要的 LLM 提供者实现\n3. `base.py` 定义了基础的 LLM 提供者接口\n\n但我还没有看到获取模型列表的具体实现。让我继续查看 CLI 相关的代码，看看 `nanobot status` 命令是如何工作的，以及是否有获取模型列表的功能。"
+        }
+    },
+    {
+        "content": "让我继续查看 CLI 命令的实现，看看 `nanobot status` 是如何获取和显示模型信息的：",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\cli\\\\commands.py\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890181924382047257",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "好的，我已经看到了项目的结构。用户想了解如何获取当前平台可以使用的模型列表。让我继续探索 CLI 相关的代码，看看是否有 `nanobot status` 或类似的命令来显示可用模型。\n\n让我查看 `cli/commands.py` 文件，看看 `nanobot status` 命令是如何实现的。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "好的，我已经看到了项目的结构。用户想了解如何获取当前平台可以使用的模型列表。让我继续探索 CLI 相关的代码，看看是否有 `nanobot status` 或类似的命令来显示可用模型。\n\n让我查看 `cli/commands.py` 文件，看看 `nanobot status` 命令是如何实现的。"
+        }
+    },
+    {
+        "content": "让我继续深入探索，看看是否有获取模型列表的相关功能：",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"query\":\"nanobot get available models list LiteLLM model list\",\"count\":5}",
+                    "name": "search_web"
+                },
+                "id": "call_-7890191407669830012",
+                "type": "function"
+            },
+            {
+                "index": 1,
+                "function": {
+                    "arguments": "{\"command\":\"cd \\\"D:\\\\project\\\\git下载项目\\\\nanobot\\\" && grep -r \\\"model\\\" --include=\\\"*.py\\\" | grep -i \\\"list\\\\|available\\\\|get.*model\\\" | head -30\"}",
+                    "name": "shell_command"
+                },
+                "id": "call_-7890191407669830011",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户想了解 nanobot 项目如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，看看是否有相关的功能。\n\n从我目前看到的代码来看：\n1. `nanobot/providers/registry.py` - 定义了各种 LLM 提供商的元数据\n2. `nanobot/providers/litellm_provider.py` - 使用 LiteLLM 作为统一的 LLM 接口\n3. `nanobot/cli/commands.py` - CLI 命令\n\n但我还没有看到获取模型列表的功能。让我继续搜索一下，看看是否有相关的代码。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户想了解 nanobot 项目如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，看看是否有相关的功能。\n\n从我目前看到的代码来看：\n1. `nanobot/providers/registry.py` - 定义了各种 LLM 提供商的元数据\n2. `nanobot/providers/litellm_provider.py` - 使用 LiteLLM 作为统一的 LLM 接口\n3. `nanobot/cli/commands.py` - CLI 命令\n\n但我还没有看到获取模型列表的功能。让我继续搜索一下，看看是否有相关的代码。"
+        }
+    },
+    {
+        "content": "让我继续深入探索这个项目，看看是否有获取模型列表的功能实现：",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"query\":\"nanobot get available models list litellm\"}",
+                    "name": "search_web"
+                },
+                "id": "call_-7890187009623318992",
+                "type": "function"
+            },
+            {
+                "index": 1,
+                "function": {
+                    "arguments": "{\"dir_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\providers\"}",
+                    "name": "get_dir_content"
+                },
+                "id": "call_-7890187009623318991",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户想了解 nanobot 项目如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，特别是 providers 相关的部分。\n\n从目前看到的内容：\n1. `nanobot/providers/` 目录包含了 provider 相关的代码\n2. `registry.py` 定义了各种 provider 的元数据\n3. `litellm_provider.py` 是使用 LiteLLM 的实现\n\n但我还没有看到获取模型列表的具体实现。让我继续查看更多文件，特别是看看是否有 CLI 命令或者 API 来获取模型列表。\n\n从 README 中看到有 `nanobot status` 命令，让我看看它的实现。从 commands.py 中可以看到 status 命令只是显示配置状态，并没有获取可用模型列表的功能。\n\n让我搜索一下是否有获取模型列表的功能。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户想了解 nanobot 项目如何获取当前平台可以使用的模型列表。让我继续探索这个项目的代码，特别是 providers 相关的部分。\n\n从目前看到的内容：\n1. `nanobot/providers/` 目录包含了 provider 相关的代码\n2. `registry.py` 定义了各种 provider 的元数据\n3. `litellm_provider.py` 是使用 LiteLLM 的实现\n\n但我还没有看到获取模型列表的具体实现。让我继续查看更多文件，特别是看看是否有 CLI 命令或者 API 来获取模型列表。\n\n从 README 中看到有 `nanobot status` 命令，让我看看它的实现。从 commands.py 中可以看到 status 命令只是显示配置状态，并没有获取可用模型列表的功能。\n\n让我搜索一下是否有获取模型列表的功能。"
+        }
+    },
+    {
+        "content": "咕咕嘎嘎！让我继续深入探索一下这个项目的配置和 CLI 部分，看看有没有获取模型列表的功能~",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{\"file_path\":\"D:\\\\project\\\\git下载项目\\\\nanobot\\\\nanobot\\\\config\\\\schema.py\"}",
+                    "name": "read_file"
+                },
+                "id": "call_-7890176014507041596",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我仔细分析一下这个项目的代码结构。\n\n从我读取的文件来看：\n\n1. **providers/registry.py** - 这是 Provider 注册表，定义了所有支持的 LLM 提供商的元数据\n2. **providers/litellm_provider.py** - 使用 LiteLLM 实现的多提供商支持\n3. **providers/base.py** - LLM 提供商的基类接口\n\n从代码分析来看，nanobot 项目**并没有直接实现\"获取当前平台可用模型列表\"的功能**。让我解释一下：\n\n1. **Provider Registry (registry.py)**:\n   - 定义了 `PROVIDERS` 元组，包含所有支持的提供商配置\n   - 每个提供商有 `keywords` 字段用于模型名称匹配\n   - 但这只是静态配置，不是动态获取模型列表\n\n2. **LiteLLM Provider (litellm_provider.py)**:\n   - 使用 LiteLLM 库来调用各种 LLM API\n   - 没有实现获取模型列表的方法\n\n3. **从搜索结果看**:\n   - LiteLLM 有一个 \"Model Discovery\" 功能，可以通过 `/v1/models` 端点获取模型列表\n   - 但 nanobot 项目目前没有使用这个功能\n\n让我再看看是否有其他相关文件...",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我仔细分析一下这个项目的代码结构。\n\n从我读取的文件来看：\n\n1. **providers/registry.py** - 这是 Provider 注册表，定义了所有支持的 LLM 提供商的元数据\n2. **providers/litellm_provider.py** - 使用 LiteLLM 实现的多提供商支持\n3. **providers/base.py** - LLM 提供商的基类接口\n\n从代码分析来看，nanobot 项目**并没有直接实现\"获取当前平台可用模型列表\"的功能**。让我解释一下：\n\n1. **Provider Registry (registry.py)**:\n   - 定义了 `PROVIDERS` 元组，包含所有支持的提供商配置\n   - 每个提供商有 `keywords` 字段用于模型名称匹配\n   - 但这只是静态配置，不是动态获取模型列表\n\n2. **LiteLLM Provider (litellm_provider.py)**:\n   - 使用 LiteLLM 库来调用各种 LLM API\n   - 没有实现获取模型列表的方法\n\n3. **从搜索结果看**:\n   - LiteLLM 有一个 \"Model Discovery\" 功能，可以通过 `/v1/models` 端点获取模型列表\n   - 但 nanobot 项目目前没有使用这个功能\n\n让我再看看是否有其他相关文件..."
+        }
+    },
+    {
+        "content": "咕咕嘎嘎！让我来帮你详细分析 nanobot 项目中关于模型列表获取的机制~\n\n## 📋 核心发现\n\n经过代码分析，**nanobot 目前并没有直接提供\"获取当前平台可用模型列表\"的功能**。它采用的是**静态注册 + 动态匹配**的方式。让我详细解释：\n\n---\n\n## 🏗️ 架构设计\n\n### 1. Provider Registry（提供商注册表）\n\n核心文件：`nanobot/providers/registry.py`\n\n```python\nPROVIDERS: tuple[ProviderSpec, ...] = (\n    # 网关型提供商（可路由任意模型）\n    ProviderSpec(\n        name=\"openrouter\",\n        keywords=(\"openrouter\",),\n        env_key=\"OPENROUTER_API_KEY\",\n        is_gateway=True,  # 👈 网关类型\n        detect_by_key_prefix=\"sk-or-\",  # 通过 API key 前缀自动检测\n    ),\n    \n    # 标准提供商（通过模型名关键词匹配）\n    ProviderSpec(\n        name=\"anthropic\",\n        keywords=(\"anthropic\", \"claude\"),  # 👈 模型名关键词\n        env_key=\"ANTHROPIC_API_KEY\",\n    ),\n    \n    # 本地部署\n    ProviderSpec(\n        name=\"vllm\",\n        keywords=(\"vllm\",),\n        is_local=True,  # 👈 本地类型\n    ),\n    # ... 更多提供商\n)\n```\n\n### 2. 模型匹配逻辑\n\n```python\n# 通过模型名称关键词匹配提供商\ndef find_by_model(model: str) -> ProviderSpec | None:\n    model_lower = model.lower()\n    for spec in PROVIDERS:\n        if spec.is_gateway or spec.is_local:\n            continue  # 跳过网关和本地\n        if any(kw in model_lower for kw in spec.keywords):\n            return spec\n    return None\n\n# 检测网关/本地提供商\ndef find_gateway(\n    provider_name: str | None = None,\n    api_key: str | None = None,\n    api_base: str | None = None,\n) -> ProviderSpec | None:\n    # 1. 直接通过配置名匹配\n    # 2. 通过 API key 前缀检测（如 \"sk-or-\" → OpenRouter）\n    # 3. 通过 api_base URL 关键词检测\n```\n\n---\n\n## 🔍 如何知道有哪些可用模型？\n\n### 方式一：静态配置（当前方式）\n\nnanobot 通过配置文件 `~/.nanobot/config.json` 来指定模型：\n\n```json\n{\n  \"agents\": {\n    \"defaults\": {\n      \"model\": \"anthropic/claude-opus-4-5\"  // 👈 直接指定模型名\n    }\n  }\n}\n```\n\n### 方式二：LiteLLM 的 Model Discovery（底层支持）\n\nnanobot 使用 LiteLLM 作为统一接口，LiteLLM 本身支持通过 `/v1/models` 端点获取模型列表：\n\n```python\n# LiteLLM 支持的方式（nanobot 未直接暴露）\nimport litellm\n\n# 获取 OpenRouter 的模型列表\nresponse = litellm.module_level_client.models.list(\n    api_key=\"sk-or-xxx\",\n    api_base=\"https://openrouter.ai/api/v1\"\n)\n```\n\n---\n\n## 📊 当前支持的提供商列表\n\n从 `registry.py` 中提取：\n\n| 提供商 | 类型 | 匹配关键词 | 特点 |\n|--------|------|-----------|------|\n| **OpenRouter** | Gateway | `openrouter` | API key 前缀 `sk-or-` |\n| **AiHubMix** | Gateway | `aihubmix` | 自动剥离模型前缀 |\n| **Custom** | Gateway | - | 用户自定义端点 |\n| **Anthropic** | Standard | `anthropic`, `claude` | 无需前缀 |\n| **OpenAI** | Standard | `openai`, `gpt` | 无需前缀 |\n| **DeepSeek** | Standard | `deepseek` | 需要 `deepseek/` 前缀 |\n| **Gemini** | Standard | `gemini` | 需要 `gemini/` 前缀 |\n| **Zhipu** | Standard | `zhipu`, `glm`, `zai` | 需要 `zai/` 前缀 |\n| **DashScope** | Standard | `qwen`, `dashscope` | 需要 `dashscope/` 前缀 |\n| **Moonshot** | Standard | `moonshot`, `kimi` | 需要 `moonshot/` 前缀 |\n| **MiniMax** | Standard | `minimax` | 需要 `minimax/` 前缀 |\n| **vLLM** | Local | `vllm` | 本地部署 |\n| **Groq** | Standard | `groq` | 主要用于语音转录 |\n\n---\n\n## 💡 如果要添加\"获取模型列表\"功能\n\n可以这样做：\n\n```python\n# 建议的实现方式\nasync def get_available_models(self) -> list[str]:\n    \"\"\"获取当前配置的提供商支持的模型列表\"\"\"\n    if self._gateway and self._gateway.is_gateway:\n        # 网关类型：调用 /v1/models 端点\n        import httpx\n        async with httpx.AsyncClient() as client:\n            response = await client.get(\n                f\"{self.api_base}/v1/models\",\n                headers={\"Authorization\": f\"Bearer {self.api_key}\"}\n            )\n            return [m[\"id\"] for m in response.json()[\"data\"]]\n    else:\n        # 标准提供商：返回已知模型列表\n        return _get_known_models_for_provider(self._gateway.name)\n```\n\n---\n\n## 📝 总结\n\n咕咕嘎嘎！nanobot 的设计理念是：\n\n1. **静态注册** - 在 `registry.py` 中预定义所有支持的提供商\n2. **动态匹配** - 根据模型名称关键词自动选择提供商\n3. **统一接口** - 通过 LiteLLM 屏蔽不同提供商的差异\n4. **配置驱动** - 用户在配置文件中指定要使用的模型\n\n**它没有运行时动态获取模型列表的功能**，而是依赖用户手动配置模型名称。如果需要这个功能，需要扩展 LiteLLM 的 `/v1/models` 端点调用。\n\n需要我帮你进一步分析某个具体部分吗？🐧",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null,
+        "reasoning_content": "好的，用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我仔细分析一下这个项目的代码结构。\n\n从我读取的文件来看：\n\n1. **providers/registry.py** - 这是核心的 Provider 注册表，定义了所有支持的 LLM 提供商\n2. **providers/litellm_provider.py** - 使用 LiteLLM 作为统一接口来调用各种 LLM\n3. **config/schema.py** - 配置文件结构\n\n关键发现：\n\n1. **nanobot 并没有直接获取\"当前平台可用模型列表\"的功能**。它使用的是 LiteLLM 作为统一接口，LiteLLM 支持很多提供商。\n\n2. **Provider Registry (registry.py)** 是核心：\n   - 定义了 `PROVIDERS` 元组，包含所有支持的提供商\n   - 每个提供商有 `ProviderSpec` 定义，包含：\n     - `name`: 配置字段名\n     - `keywords`: 模型名称关键词（用于自动匹配）\n     - `env_key`: LiteLLM 环境变量\n     - `litellm_prefix`: 模型前缀\n     - `is_gateway`: 是否是网关（如 OpenRouter）\n     - `is_local`: 是否是本地部署（如 vLLM）\n\n3. **模型匹配逻辑**：\n   - `find_by_model(model)` - 通过模型名称关键词匹配提供商\n   - `find_gateway()` - 检测网关/本地提供商\n   - `find_by_name()` - 通过配置名称查找\n\n4. **LiteLLM 的 Model Discovery**：\n   - LiteLLM 本身支持 `/v1/models` 端点来获取可用模型\n   - 但 nanobot 目前没有直接暴露这个功能\n\n我注意到项目通过关键词和配置名称来匹配和定位不同的 LLM 提供商，这是一个灵活的设计方案。系统允许动态添加和识别新的模型提供商，同时保持配置的简洁性。\n\n对于获取模型列表，目前需要依赖 LiteLLM 的原生功能或手动配置。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "好的，用户想了解 nanobot 项目中如何获取当前平台可以使用的模型列表。让我仔细分析一下这个项目的代码结构。\n\n从我读取的文件来看：\n\n1. **providers/registry.py** - 这是核心的 Provider 注册表，定义了所有支持的 LLM 提供商\n2. **providers/litellm_provider.py** - 使用 LiteLLM 作为统一接口来调用各种 LLM\n3. **config/schema.py** - 配置文件结构\n\n关键发现：\n\n1. **nanobot 并没有直接获取\"当前平台可用模型列表\"的功能**。它使用的是 LiteLLM 作为统一接口，LiteLLM 支持很多提供商。\n\n2. **Provider Registry (registry.py)** 是核心：\n   - 定义了 `PROVIDERS` 元组，包含所有支持的提供商\n   - 每个提供商有 `ProviderSpec` 定义，包含：\n     - `name`: 配置字段名\n     - `keywords`: 模型名称关键词（用于自动匹配）\n     - `env_key`: LiteLLM 环境变量\n     - `litellm_prefix`: 模型前缀\n     - `is_gateway`: 是否是网关（如 OpenRouter）\n     - `is_local`: 是否是本地部署（如 vLLM）\n\n3. **模型匹配逻辑**：\n   - `find_by_model(model)` - 通过模型名称关键词匹配提供商\n   - `find_gateway()` - 检测网关/本地提供商\n   - `find_by_name()` - 通过配置名称查找\n\n4. **LiteLLM 的 Model Discovery**：\n   - LiteLLM 本身支持 `/v1/models` 端点来获取可用模型\n   - 但 nanobot 目前没有直接暴露这个功能\n\n我注意到项目通过关键词和配置名称来匹配和定位不同的 LLM 提供商，这是一个灵活的设计方案。系统允许动态添加和识别新的模型提供商，同时保持配置的简洁性。\n\n对于获取模型列表，目前需要依赖 LiteLLM 的原生功能或手动配置。"
+        }
+    }
+]

@@ -1,0 +1,35 @@
+[
+    {
+        "role": "user",
+        "content": "你好,你可以查看你有什么skill",
+        "tool_calls": null,
+        "tool_call_id": null
+    },
+    {
+        "content": "你好呀，咕咕嘎嘎！让我来查看一下我有什么技能吧～",
+        "role": "assistant",
+        "tool_calls": [
+            {
+                "index": 0,
+                "function": {
+                    "arguments": "{}",
+                    "name": "get_skill"
+                },
+                "id": "call_-7807113958342517316",
+                "type": "function"
+            }
+        ],
+        "function_call": null,
+        "reasoning_content": "用户问我可以查看有什么skill。根据系统提示，我应该使用get_skill工具来列出所有可以阅读的技能文档。",
+        "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_content": "用户问我可以查看有什么skill。根据系统提示，我应该使用get_skill工具来列出所有可以阅读的技能文档。"
+        }
+    },
+    {
+        "role": "user",
+        "content": "tool_call_id = self._get_tool_call_attr(tool_call, 'id')\n                msg_list.append(Message(role=\"tool\", content=m, tool_call_id=tool_call_id))tool_call_id = self._get_tool_call_attr(tool_call, 'id')\n                msg_list.append(Message(role=\"tool\", content=m, tool_call_id=tool_call_id))",
+        "tool_calls": null,
+        "tool_call_id": null
+    }
+]

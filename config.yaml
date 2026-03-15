@@ -1,0 +1,28 @@
+ai:
+  api_key: 4dec8407c87c3bc589e1b9b179568cda.flkj7EpJPOEupgaf
+  value: zai
+  model: glm-5
+bocha:
+  api_key: sk-01431e386fd6426987ee3f30910ee62c
+  base_url: https://api.bocha.com
+  index_name: news
+tavily:
+  key: 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
+web_search:
+  web_search_ID: 2
+
+browser:
+  playwright_browsers_path: D:\\playwright_browsers
+default_provider: ai
+email:
+  email: shitbot@163.com
+  password: DRgZXAaRZ4tpmDj7
+  smtp_port: 465
+  smtp_server: smtp.163.com
+  use_tls: true
+stop:
+  file: []
+user:
+  bot_name: 偷摸零
+  bot_prompt: 你会经常说咕咕嘎嘎（企鹅叫）
+  user_name: 黎大白
