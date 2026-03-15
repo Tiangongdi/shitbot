@@ -470,7 +470,6 @@ ShitBot/
 │   ├── TIMER_TOOLS.md      # 定时器工具指南
 │   ├── INPUT_TOOLS.md      # 输入工具指南
 │   ├── AI_API_Platforms_OpenAI_SDK_Compatible.md  # AI API 平台兼容性文档
-│   ├── HELLO.md            # 工具使用指南
 │   └── Write_Doc.md        # 文档编写指南
 ├── Skills/                 # 技能目录
 │   ├── skill-creator/      # 技能创建工具
