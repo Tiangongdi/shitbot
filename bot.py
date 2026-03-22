@@ -91,6 +91,23 @@ class Bot:
             content=prompt
         )   
         self._add_message(msg)
+    
+    async def init_mcp(self):
+        """
+        初始化 MCP 连接并合并工具定义到 AI 客户端
+        必须在 init_prompt 之后调用
+        """
+        await self.tools.init_mcp()
+        mcp_tools = self.tools.get_mcp_tools_definition()
+        if mcp_tools:
+            # 合并内置工具和 MCP 工具
+            from tool import get_tools_definition
+            self.ai.tools = get_tools_definition() + mcp_tools
+            if self.terminal_ui:
+                self.terminal_ui.system(f"[MCP] 已加载 {len(mcp_tools)} 个 MCP 工具")
+        else:
+            from tool import get_tools_definition
+            self.ai.tools = get_tools_definition()
     def init_system_prompt(self):
         """初始化系统提示"""
         # 获取当前操作系统为Windows

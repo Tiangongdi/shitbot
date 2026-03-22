@@ -16,6 +16,7 @@ from tools.role import Role
 from tools.skill import Skill
 from tools.tavily_api import TavilySearch
 from tools.email_reader import EmailReader
+from tools.mcp_client import MCPClient, MCPServerConfig
 from ai import Message
 from ui_components import TerminalUI
 class Tool:
@@ -41,6 +42,10 @@ class Tool:
         # 初始化邮件读取器
         self.email_reader = None
         self._init_email_reader()
+
+        # 初始化 MCP 客户端
+        self.mcp_client = MCPClient()
+        self._mcp_initialized = False
     
     def _init_email_reader(self):
         """初始化邮件读取器"""
@@ -56,6 +61,49 @@ class Tool:
         except Exception as e:
             pass
     
+
+    # ==================== MCP 集成 ====================
+    
+    async def init_mcp(self):
+        """
+        初始化 MCP 连接
+        从配置文件读取 MCP Server 列表并连接
+        """
+        if self._mcp_initialized:
+            return
+        
+        mcp_config = self.config.mcp
+        if not mcp_config.enabled:
+            return
+        
+        if not mcp_config.servers:
+            return
+        
+        # 将配置中的 server 项转换为 MCPServerConfig
+        server_configs = []
+        for srv in mcp_config.servers:
+            server_configs.append(MCPServerConfig(
+                name=srv.name,
+                transport=srv.transport,
+                command=srv.command,
+                args=srv.args,
+                env=srv.env,
+                url=srv.url,
+                description=srv.description
+            ))
+        
+        await self.mcp_client.connect_all(server_configs)
+        self._mcp_initialized = True
+
+    def get_mcp_tools_definition(self) -> list:
+        """
+        获取 MCP 工具的 OpenAI function calling 格式定义
+        用于合并到 AI 的 tools 参数中
+        """
+        if not self._mcp_initialized:
+            return []
+        return self.mcp_client.get_tools_definition()
+
     def set_terminal_ui(self, terminal_ui):
         """
         设置终端 UI 实例
@@ -92,7 +140,10 @@ class Tool:
                     self.terminal_ui.error(error_msg)
                     msg_list.append(Message(role="tool", content=error_msg, tool_call_id=tool_call.id))
                     continue
-                if tool_name == "search_web":
+                # 优先检查是否为 MCP 工具
+                if self._mcp_initialized and self.mcp_client.is_mcp_tool(tool_name):
+                    m = await self.mcp_client.call_tool(tool_name, tool_args)
+                elif tool_name == "search_web":
                     m = await self._search_web(tool_args)
                 elif tool_name == "webbot_task":
                     m = await self.webbot_task(tool_args)

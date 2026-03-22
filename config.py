@@ -2,7 +2,7 @@ import os
 import json
 import yaml
 from typing import Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -89,6 +89,28 @@ class WebSearchConfig:
 
 
 @dataclass
+class MCPServerConfigItem:
+    """单个 MCP Server 配置项（对应 config.yaml 中的一个 server）"""
+    name: str = ""
+    transport: str = "stdio"       # "stdio" 或 "sse"
+    command: str = ""              # stdio 模式的启动命令
+    args: list = field(default_factory=list)
+    env: dict = field(default_factory=dict)
+    url: str = ""                  # SSE 模式的 URL
+    description: str = ""
+
+
+@dataclass
+class MCPConfig:
+    """
+    MCP (Model Context Protocol) 配置
+    用于连接外部 MCP Server，扩展 ShitBot 的工具能力
+    """
+    enabled: bool = False
+    servers: list = field(default_factory=list)  # List[MCPServerConfigItem]
+
+
+@dataclass
 class AppConfig:
     """应用配置"""
     ai: AIConfig
@@ -99,6 +121,7 @@ class AppConfig:
     stop: StopConfig
     tavily: TavilyConfig
     web_search: WebSearchConfig
+    mcp: MCPConfig = field(default_factory=MCPConfig)
     default_provider: str = "minimax"
 
 
@@ -187,6 +210,25 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         web_search_ID=web_search_config_data.get('web_search_ID', 1)
     )
     
+    # MCP 配置
+    mcp_config_data = config_data.get('mcp', {})
+    mcp_servers_raw = mcp_config_data.get('servers') or []
+    mcp_servers = []
+    for srv in mcp_servers_raw:
+        mcp_servers.append(MCPServerConfigItem(
+            name=srv.get('name', ''),
+            transport=srv.get('transport', 'stdio'),
+            command=srv.get('command', ''),
+            args=srv.get('args', []),
+            env=srv.get('env', {}),
+            url=srv.get('url', ''),
+            description=srv.get('description', '')
+        ))
+    mcp_config = MCPConfig(
+        enabled=mcp_config_data.get('enabled', False),
+        servers=mcp_servers
+    )
+    
     default_provider = config_data.get('default_provider', 'ai')
     
     return AppConfig(
@@ -198,6 +240,7 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         stop=stop_config,
         tavily=tavily_config,
         web_search=web_search_config,
+        mcp=mcp_config,
         default_provider=default_provider
     )
 
@@ -246,6 +289,10 @@ def create_default_config(config_path: str = "config.yaml"):
         },
         'web_search': {
             'web_search_ID': 1
+        },
+        'mcp': {
+            'enabled': False,
+            'servers': []
         },
         'default_provider': 'glm '
     }
@@ -427,6 +474,10 @@ def setup_wizard(config_path: str = "config.yaml"):
         },
         'stop': {
             'file': stop_file
+        },
+        'mcp': {
+            'enabled': False,
+            'servers': []
         },
         'default_provider': 'ai'
     }

@@ -291,6 +291,9 @@ class ShitBotTerminal:
     async def run(self):
         check_and_run_setup_wizard()
         
+        # 初始化 MCP 连接
+        await self.bot.init_mcp()
+        
         self.ui.show_welcome()
         self.ui.show_help([
             {"name": "/help", "description": "显示此帮助信息"},

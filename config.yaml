@@ -32,3 +32,31 @@ user:
   bot_name: 偷摸零
   bot_prompt: 你会经常说咕咕嘎嘎（企鹅叫）
   user_name: 黎大白
+
+# MCP (Model Context Protocol) 配置
+# 通过 MCP 协议连接外部工具 Server，扩展 ShitBot 的能力
+# 文档: https://modelcontextprotocol.io/
+mcp:
+  enabled: false  # 设为 true 启用 MCP
+  servers:
+    # 示例: 文件系统 Server (stdio 模式)
+    # - name: filesystem
+    #   transport: stdio
+    #   command: npx
+    #   args: ["-y", "@anthropic/mcp-filesystem-server", "D:\\project"]
+    #   description: 文件系统操作
+    #
+    # 示例: GitHub Server (stdio 模式)
+    # - name: github
+    #   transport: stdio
+    #   command: npx
+    #   args: ["-y", "@anthropic/mcp-github-server"]
+    #   env:
+    #     GITHUB_TOKEN: "your_github_token"
+    #   description: GitHub 操作
+    #
+    # 示例: 远程 Server (SSE 模式)
+    # - name: remote-service
+    #   transport: sse
+    #   url: http://localhost:8080/mcp
+    #   description: 远程工具服务
