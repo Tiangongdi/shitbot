@@ -654,6 +654,10 @@ Contributions of code, skills, roles, or issue reports are welcome!
 
 ---
 
+## ⚠️ Development Note
+
+Most of the code in this project was generated through AI-assisted programming (Vibe Coding). Human responsibilities include architecture design, requirement definition, and code review.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details

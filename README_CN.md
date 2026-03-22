@@ -683,6 +683,10 @@ playwright install chromium
 
 ***
 
+## ⚠️ 开发声明
+
+本项目大部分代码通过 AI 辅助编程（Vibe Coding）完成，人类负责架构设计、需求定义和代码审查。
+
 ## 📄 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
