@@ -15,6 +15,7 @@ from tools.safe import safe_format
 from tools.role import Role
 from tools.skill import Skill
 from tools.tavily_api import TavilySearch
+from tools.email_reader import EmailReader
 from ai import Message
 from ui_components import TerminalUI
 class Tool:
@@ -36,6 +37,24 @@ class Tool:
         self.project_root = os.path.dirname(os.path.abspath(__file__))
         self.tavily_client = TavilySearch()
         self.doc = Doc()
+
+        # 初始化邮件读取器
+        self.email_reader = None
+        self._init_email_reader()
+    
+    def _init_email_reader(self):
+        """初始化邮件读取器"""
+        try:
+            imap_config = self.config.imap
+            if imap_config.email and imap_config.password:
+                self.email_reader = EmailReader(
+                    email_address=imap_config.email,
+                    password=imap_config.password,
+                    imap_server=imap_config.imap_server,
+                    imap_port=imap_config.imap_port
+                )
+        except Exception as e:
+            pass
     
     def set_terminal_ui(self, terminal_ui):
         """
@@ -109,8 +128,6 @@ class Tool:
                     m = self.list(tool_args)    
                 elif tool_name == "delete_file":
                     m = await self.delete_file(tool_args, if_user)
-                elif tool_name == "save_memory":
-                    m = self.save_memory(tool_args)
                 elif tool_name == "get_memory":
                     m = self.get_memory(tool_args)
                 elif tool_name == "get_doc_list":
@@ -129,6 +146,17 @@ class Tool:
                     m = self.run_code_file(tool_args)
                 elif tool_name == "append_to_file":
                     m = self.append_to_file(tool_args)
+                elif tool_name == "list_email_folders":
+                    m = self.list_email_folders(tool_args)
+                elif tool_name == "get_email_list":
+                    m = self.get_email_list(tool_args)
+                elif tool_name == "get_email_content":
+                    m = self.get_email_content(tool_args)
+                elif tool_name == "search_emails":
+                    m = self.search_emails(tool_args)
+                elif tool_name == "mark_email_read":
+                    m = self.mark_email_read(tool_args)
+
                 else:
                     m = f"未知技能：{tool_name}"
                 # 创建Message对象并添加到msg_list
@@ -262,10 +290,15 @@ class Tool:
     def shell_command(self, args: Dict[str, Any]) -> str:
         """执行 shell 命令"""
         command = args.get("command", "")
+        use_timeout = args.get("use_timeout", True)
         try:
             import subprocess
-            result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True, encoding='utf-8', errors='replace')
+            timeout_seconds = 60 if use_timeout else None
+            result = subprocess.run(command, shell=True, check=True, text=True, capture_output=True, encoding='utf-8', errors='replace', timeout=timeout_seconds)
             return result.stdout
+        except subprocess.TimeoutExpired as e:
+            output = (e.stdout or "") + (e.stderr or "")
+            return f"命令执行超时（超过60秒），已终止命令。\n当前输出:\n{output}"
         except subprocess.CalledProcessError as e:
             return f"命令执行失败: {e.stderr}"
     
@@ -440,15 +473,6 @@ class Tool:
             return f"代码执行结果: 返回码{returncode}, 输出: {stdout}, 错误: {stderr}"
         except Exception as e:
             return f"代码执行失败：{e}"
-    def save_memory(self, args: Dict[str, Any]):
-        """
-        保存记忆
-        Args:
-            memory: 记忆内容
-        Returns:
-            None
-        """
-        self.shared_memory.clear()
     def get_memory(self, args: Dict[str, Any]) -> str:
         """
         获取记忆
@@ -461,6 +485,220 @@ class Tool:
         r = self.memory_bot.get_memory(memory_description)
         return r
 
+
+    def _ensure_email_connection(self) -> str:
+        """确保邮件读取器已连接到服务器"""
+        if not self.email_reader:
+            return "邮件读取器未初始化，请检查IMAP配置"
+        
+        if not self.email_reader.connection:
+            result = self.email_reader.connect()
+            if not result.get("success"):
+                return f"连接邮件服务器失败: {result.get('error')}"
+        
+        return None  # 连接成功，返回None表示无错误
+
+    def list_email_folders(self, args: Dict[str, Any]) -> str:
+        """
+        列出邮箱文件夹
+        
+        Args:
+            args: 空字典
+            
+        Returns:
+            str: 文件夹列表
+        """
+        error = self._ensure_email_connection()
+        if error:
+            return error
+        
+        try:
+            result = self.email_reader.list_folders()
+            if result.get("success"):
+                folders = result.get("folders", [])
+                return f"邮箱文件夹列表：\n" + "\n".join([f"  - {f}" for f in folders])
+            else:
+                return f"获取文件夹列表失败: {result.get('error')}"
+        except Exception as e:
+            return f"操作失败: {str(e)}"
+    
+    def get_email_list(self, args: Dict[str, Any]) -> str:
+        """
+        获取邮件列表
+        
+        Args:
+            args: 包含folder和limit的字典
+            
+        Returns:
+            str: 邮件列表
+        """
+        error = self._ensure_email_connection()
+        if error:
+            return error
+        
+        folder = args.get("folder", "INBOX")
+        limit = args.get("limit", 10)
+        unread_only = args.get("unread_only", False)
+        
+        try:
+            result = self.email_reader.get_email_list(
+                folder=folder, 
+                limit=limit, 
+                unread_only=unread_only
+            )
+            
+            if result.get("success"):
+                emails = result.get("emails", [])
+                if not emails:
+                    return f"文件夹 {folder} 中没有邮件"
+                
+                output = [f"文件夹 {folder} 中的邮件（共{result['total']}封）：\n"]
+                for i, email in enumerate(emails, 1):
+                    output.append(f"{i}. 主题: {email['subject']}")
+                    output.append(f"   发件人: {email['from']}")
+                    output.append(f"   日期: {email['date']}")
+                    output.append(f"   ID: {email['id']}")
+                    if email.get('has_attachment'):
+                        output.append("   [有附件]")
+                    output.append("")
+                
+                return "\n".join(output)
+            else:
+                return f"获取邮件列表失败: {result.get('error')}"
+        except Exception as e:
+            return f"操作失败: {str(e)}"
+    
+    def get_email_content(self, args: Dict[str, Any]) -> str:
+        """
+        获取邮件内容
+        
+        Args:
+            args: 包含email_id和folder的字典
+            
+        Returns:
+            str: 邮件内容
+        """
+        error = self._ensure_email_connection()
+        if error:
+            return error
+        
+        email_id = args.get("email_id", "")
+        folder = args.get("folder", "INBOX")
+        
+        if not email_id:
+            return "请提供邮件ID"
+        
+        try:
+            result = self.email_reader.get_email_content(email_id=email_id, folder=folder)
+            
+            if result.get("success"):
+                email = result['email']
+                output = [
+                    "=" * 60,
+                    f"主题: {email['subject']}",
+                    f"发件人: {email['from']}",
+                    f"收件人: {email['to']}",
+                ]
+                
+                if email.get('cc'):
+                    output.append(f"抄送: {email['cc']}")
+                
+                output.append(f"日期: {email['date']}")
+                output.append("=" * 60)
+                output.append("\n正文内容：")
+                output.append("-" * 60)
+                output.append(email['body'][:1000])  # 限制显示1000字符
+                
+                if len(email['body']) > 1000:
+                    output.append(f"\n... (还有 {len(email['body']) - 1000} 字符)")
+                
+                if email.get('attachments'):
+                    output.append("\n附件：")
+                    for att in email['attachments']:
+                        output.append(f"  - {att['filename']} ({att['size']} bytes)")
+                
+                return "\n".join(output)
+            else:
+                return f"获取邮件内容失败: {result.get('error')}"
+        except Exception as e:
+            return f"操作失败: {str(e)}"
+    
+    def search_emails(self, args: Dict[str, Any]) -> str:
+        """
+        搜索邮件
+        
+        Args:
+            args: 包含criteria、folder和limit的字典
+            
+        Returns:
+            str: 搜索结果
+        """
+        error = self._ensure_email_connection()
+        if error:
+            return error
+        
+        criteria = args.get("criteria", "")
+        folder = args.get("folder", "INBOX")
+        limit = args.get("limit", 10)
+        
+        if not criteria:
+            return "请提供搜索关键词"
+        
+        try:
+            result = self.email_reader.search_emails(
+                criteria=criteria, 
+                folder=folder, 
+                limit=limit
+            )
+            
+            if result.get("success"):
+                emails = result.get("emails", [])
+                if not emails:
+                    return f"没有找到包含 '{criteria}' 的邮件"
+                
+                output = [f"搜索 '{criteria}' 的结果（共{result['total']}封）：\n"]
+                for i, email in enumerate(emails, 1):
+                    output.append(f"{i}. 主题: {email['subject']}")
+                    output.append(f"   发件人: {email['from']}")
+                    output.append(f"   日期: {email['date']}")
+                    output.append(f"   ID: {email['id']}")
+                    output.append("")
+                
+                return "\n".join(output)
+            else:
+                return f"搜索失败: {result.get('error')}"
+        except Exception as e:
+            return f"操作失败: {str(e)}"
+    
+    def mark_email_read(self, args: Dict[str, Any]) -> str:
+        """
+        标记邮件为已读
+        
+        Args:
+            args: 包含email_id和folder的字典
+            
+        Returns:
+            str: 操作结果
+        """
+        error = self._ensure_email_connection()
+        if error:
+            return error
+        
+        email_id = args.get("email_id", "")
+        folder = args.get("folder", "INBOX")
+        
+        if not email_id:
+            return "请提供邮件ID"
+        
+        try:
+            result = self.email_reader.mark_as_read(email_id=email_id, folder=folder)
+            
+            if result.get("success"):
+                return f"邮件 {email_id} 已标记为已读"
+            else:
+                return f"标记失败: {result.get('error')}"
+        except Exception as e:
+            return f"操作失败: {str(e)}"
     def append_to_file(self, args: Dict[str, Any]) -> str:
         """
         在文件末尾追加文本
@@ -664,6 +902,11 @@ def get_tools_definition() -> list:
                         "command": {
                             "type": "string",
                             "description": "要执行的 shell 命令"
+                        },
+                        "use_timeout": {
+                            "type": "boolean",
+                            "description": "是否启用超时限制，默认为true。启用后命令执行超过60秒将自动终止并返回当前输出，防止命令长时间等待用户输入",
+                            "default": True
                         }
                     },
                     "required": ["command"]
@@ -832,18 +1075,6 @@ def get_tools_definition() -> list:
         {
             "type": "function",
             "function": {
-                "name": "save_memory",
-                "description": "保存当前对话记忆",
-                "parameters": {
-                    "type": "object",
-                    "properties": {},
-                    "required": []
-                }
-            }
-        },
-        {
-            "type": "function",
-            "function": {
                 "name": "get_memory",
                 "description": "让memory_bot在以前的对话记录总结信息",
                 "parameters": {
@@ -952,7 +1183,118 @@ def get_tools_definition() -> list:
         {
             "type": "function",
             "function": {
-                "name": "append_to_file",
+                "name": "list_email_folders",
+                "description": "列出邮箱中的所有文件夹",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get_email_list",
+                "description": "获取邮箱中的邮件列表",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "folder": {
+                            "type": "string",
+                            "description": "文件夹名称，默认为INBOX",
+                            "default": "INBOX"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "返回邮件数量，默认10",
+                            "default": 10
+                        },
+                        "unread_only": {
+                            "type": "boolean",
+                            "description": "是否只获取未读邮件，默认False",
+                            "default": False
+                        }
+                    },
+                    "required": []
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get_email_content",
+                "description": "获取指定邮件的详细内容",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "email_id": {
+                            "type": "string",
+                            "description": "邮件ID"
+                        },
+                        "folder": {
+                            "type": "string",
+                            "description": "文件夹名称，默认为INBOX",
+                            "default": "INBOX"
+                        }
+                    },
+                    "required": ["email_id"]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "search_emails",
+                "description": "搜索邮件（按主题、发件人、正文搜索）",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "criteria": {
+                            "type": "string",
+                            "description": "搜索关键词"
+                        },
+                        "folder": {
+                            "type": "string",
+                            "description": "文件夹名称，默认为INBOX",
+                            "default": "INBOX"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "返回邮件数量，默认10",
+                            "default": 10
+                        }
+                    },
+                    "required": ["criteria"]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "mark_email_read",
+                "description": "标记邮件为已读",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "email_id": {
+                            "type": "string",
+                            "description": "邮件ID"
+                        },
+                        "folder": {
+                            "type": "string",
+                            "description": "文件夹名称，默认为INBOX",
+                            "default": "INBOX"
+                        }
+                    },
+                    "required": ["email_id"]
+                }
+            }
+        },
+        {
+             "type": "function",
+            "function": {
+                    "name": "append_to_file",
                 "description": "在指定文件末尾追加文本内容",
                 "parameters": {
                     "type": "object",

@@ -46,6 +46,7 @@ class SharedMemory:
         Args:
             messages: 要添加的消息列表
         """
+
         self.messages.extend(messages)
     
     def set_tools(self, tools):
@@ -78,9 +79,12 @@ class SharedMemory:
     
     def clear(self):
         """清空记忆"""
-        self.memory_bot.save_memory(self.messages)
+        # 判断当前对话历史只有系统提示词（即只有system角色的消息）
+        if all(msg.role == "system" for msg in self.messages):
+            return
+        content = self.memory_bot.save_memory(self.messages)
         self.messages.clear()
-        prompt=self.prompt.get_prompt("Bot.txt").format(name=self.config.user.bot_name, user=self.config.user.user_name, user_set=self.config.user.bot_prompt)
+        prompt=self.prompt.get_prompt("Bot.txt")
         msg = Message(
             role="system",
             content=prompt
@@ -92,6 +96,25 @@ class SharedMemory:
             content=prompt
         )   
         self.add_message(msg)
+        prompt = self.prompt.get_prompt("Self.txt")
+        msg = Message(
+            role="system",
+            content=prompt
+        )   
+        self.add_message(msg)
+        
+        prompt = self.prompt.get_prompt("Command.txt")
+        msg = Message(
+            role="system",
+            content=prompt
+        )   
+        self.add_message(msg)
+        # 前面添加记忆
+        self.add_message(Message(
+            role="system",
+            content=content
+        ))
+
         set_msg = self.init_system_prompt()
         if set_msg:
             self.add_message(set_msg)

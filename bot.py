@@ -5,15 +5,17 @@ import asyncio
 from typing import Optional, List
 from ai import AIClient,Message
 from prompt import BotPromt  
-from config import load_config          
+from config import load_config,load_settings
 from tool import Tool,get_tools_definition
 from memory import SharedMemory, get_shared_memory
+from workflows import Workflow
 import platform
 import os
 from tools.doc import Doc 
 from log import Log
 from rich.markdown import Markdown
 from ui_components import TerminalUI
+from token_tracker import TokenTracker
 class Bot:
     """AI 智能体"""
     def __init__(self, shared_memory: Optional[SharedMemory] = None, if_user_or_timer: bool = True):
@@ -39,6 +41,10 @@ class Bot:
         self.tools.set_terminal_ui(self.terminal_ui)
         self.if_user_or_timer = if_user_or_timer
         self.should_stop = False
+        self.token_tracker = TokenTracker()
+        self.conversation_count = 0 # 对话次数
+        self.settings = load_settings()
+        self.workflow = Workflow()
     
     def set_stop_flag(self, stop: bool):
         """设置终止标志"""
@@ -49,12 +55,20 @@ class Bot:
         return self.should_stop
     def init_prompt(self):
         """初始化智能体提示"""
-        prompt=self.prompt.get_prompt("Bot.txt").format(name=self.config.user.bot_name, user=self.config.user.user_name, user_set=self.config.user.bot_prompt)
+        prompt=self.prompt.get_prompt("Bot.txt")
         msg = Message(
             role="system",
             content=prompt
         )   
         self._add_message(msg)
+        # 加载工作流文件
+        workflow_prompt = self.workflow.get_workflow_file()
+        msg = Message(
+            role="system",
+            content=workflow_prompt
+        )   
+        self._add_message(msg)
+
         prompt = self.prompt.get_prompt("Safe.txt")
         msg = Message(
             role="system",
@@ -63,6 +77,20 @@ class Bot:
         self._add_message(msg)
         set_msg = self.init_system_prompt()
         self._add_message(set_msg)
+        
+        prompt = self.prompt.get_prompt("Self.txt")
+        msg = Message(
+            role="system",
+            content=prompt
+        )   
+        self._add_message(msg)
+        
+        prompt = self.prompt.get_prompt("Command.txt")
+        msg = Message(
+            role="system",
+            content=prompt
+        )   
+        self._add_message(msg)
     def init_system_prompt(self):
         """初始化系统提示"""
         # 获取当前操作系统为Windows
@@ -90,6 +118,14 @@ class Bot:
         return msg
     async def chat(self, message: str, ui=None):
         """与智能体交互"""
+        # 对话次数超过最大次数，且开启token保存模式
+        # 清空记忆
+        # 重置token使用记录
+        if self.conversation_count > self.settings.max_conversation_count and self.settings.token_saving_mode:
+            self.conversation_count = 0
+            self.clear_memory() # 清空记忆  
+        
+        self.conversation_count += 1
         set_msg = self.init_system_prompt()
         self._set_memory(set_msg,1)
         msg = Message(
@@ -112,39 +148,38 @@ class Bot:
         if response is None:
             return "抱歉，AI 生成失败，请重试。"
         
-        # 显示第一次回复
-        if response.content and ui:
+        message = response.choices[0].message
+        usage = response.usage
+        self.token_tracker.add_usage(usage)
+        
+        if message.content and ui:
             ui.console.print("[white bold]·[/white bold] ", end="")
-            ui.console.print(Markdown(response.content))
+            ui.console.print(Markdown(message.content))
         
         assistant_msg = Message(
             role="assistant",
-            content=response.content,
-            tool_calls=response.tool_calls 
+            content=message.content,
+            tool_calls=message.tool_calls,
+            token = usage   
         )
         self._add_message(assistant_msg)
         
-        # 循环处理工具调用
-        while hasattr(response, 'tool_calls') and response.tool_calls:
-            # 检查是否需要停止
+        while hasattr(message, 'tool_calls') and message.tool_calls:
             if self.check_stop():
                 if ui:
                     ui.system("\n任务已终止")
                 return "任务已终止"
             
-            # 获取工具名称用于显示
             tool_name = None
-            if response.tool_calls and len(response.tool_calls) > 0:
-                tool_name = response.tool_calls[0].function.name.strip()
+            if message.tool_calls and len(message.tool_calls) > 0:
+                tool_name = message.tool_calls[0].function.name.strip()
             
-            # 执行工具
             if ui and tool_name:
                 ui.start_thinking(tool_name)
-            tool_messages = await self.tools.execute(response,self.if_user_or_timer)
+            tool_messages = await self.tools.execute(message,self.if_user_or_timer)
             if ui and tool_name:
                 ui.stop_thinking()
             
-            # 检查是否需要停止
             if self.check_stop():
                 if ui:
                     ui.system("\n任务已终止")
@@ -154,7 +189,6 @@ class Bot:
                 self._add_messages(tool_messages)
                 messages = self._get_messages()
                 
-                # AI生成
                 if ui:
                     ui.start_thinking()
                 response = self.ai.chat(messages)
@@ -164,21 +198,25 @@ class Bot:
                 if response is None:
                     return "抱歉，AI 生成失败，请重试。"
                 
-                # 显示回复
-                if response.content and ui:
+                message = response.choices[0].message
+                usage = response.usage
+                self.token_tracker.add_usage(usage)
+                
+                if message.content and ui:
                     ui.console.print("[white bold]·[/white bold] ", end="")
-                    ui.console.print(Markdown(response.content))
+                    ui.console.print(Markdown(message.content))
                 
                 assistant_msg = Message(
                     role="assistant",
-                    content=response.content,
-                    tool_calls=response.tool_calls 
+                    content=message.content,
+                    tool_calls=message.tool_calls,
+                    token = usage
                 )
                 self._add_message(assistant_msg)
             else:
                 break
         
-        return response.content
+        return message.content
     
     def _add_message(self, message: Message):
         """
@@ -227,12 +265,32 @@ class Bot:
             self.shared_memory.set_message(message,index)
         else:
             self.messages[index] = message
-    def clear_memory(self):
-        """清空记忆"""
+    def clear_memory(self, save_token: bool = True, session_name: str = None):
+        """清空记忆
+        
+        Args:
+            save_token: 是否保存 token 数据到累积文件
+            session_name: 会话名称，可选
+        """
+        if save_token:
+            self.token_tracker.save_and_reset(session_name)
+        
         if self.shared_memory:
             self.shared_memory.clear()
         else:
             self.messages.clear()
+    
+    def save_token_usage(self, session_name: str = None):
+        """保存当前会话的 token 使用情况到累积文件
+        
+        Args:
+            session_name: 会话名称，可选
+        """
+        return self.token_tracker.save_and_reset(session_name)
+    
+    def get_token_summary(self) -> str:
+        """获取 token 使用摘要"""
+        return self.token_tracker.get_summary()
     
     def get_message_count(self) -> int:
         """
@@ -245,6 +303,13 @@ class Bot:
             return self.shared_memory.get_message_count()
         else:
             return len(self.messages)
+    def set_workflow(self, workflow: str):
+        """设置工作流"""
+        self.workflow.set_workflow(workflow)
+        self._set_memory(Message(
+            role="system",
+            content=self.workflow.get_workflow_file()
+        ),1)
 
 
 async def test_shared_memory():

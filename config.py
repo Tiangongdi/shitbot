@@ -1,4 +1,5 @@
 import os
+import json
 import yaml
 from typing import Optional
 from dataclasses import dataclass
@@ -7,13 +8,16 @@ from pathlib import Path
 
 @dataclass
 class AIConfig:
+    """AI配置"""
     api_key: str
     value: str = "zai"
     model: str = "glm-5"
+    base_url: Optional[str] = None
 
 
 @dataclass
 class BochaConfig:
+    """博查搜索配置"""
     api_key: str
     base_url: str = "https://api.bocha.com"
     index_name: str = "news"
@@ -29,16 +33,6 @@ class BrowserConfig:
 
 
 @dataclass
-class UserConfig:
-    """
-    用户配置
-    """
-    user_name: str = "黎大白"
-    bot_name: str = "偷摸零"
-    bot_prompt: str = "你会经常说咕咕嘎嘎（企鹅叫）"
-
-
-@dataclass
 class EmailConfig:
     """
     邮件配置
@@ -49,6 +43,19 @@ class EmailConfig:
     email: str = ""
     password: str = ""
     use_tls: bool = True
+
+
+@dataclass
+class IMAPConfig:
+    """
+    IMAP邮件读取配置
+    用于读取邮件的 IMAP 服务器配置
+    """
+    imap_server: str = "imap.163.com"
+    imap_port: int = 993
+    email: str = ""
+    password: str = ""
+    use_ssl: bool = True
 
 
 @dataclass
@@ -83,11 +90,12 @@ class WebSearchConfig:
 
 @dataclass
 class AppConfig:
-    user: UserConfig
+    """应用配置"""
     ai: AIConfig
     bocha: BochaConfig
     browser: BrowserConfig
     email: EmailConfig
+    imap: IMAPConfig
     stop: StopConfig
     tavily: TavilyConfig
     web_search: WebSearchConfig
@@ -95,6 +103,18 @@ class AppConfig:
 
 
 def load_config(config_path: Optional[str] = None) -> AppConfig:
+    """
+    加载配置文件
+    
+    Args:
+        config_path: 配置文件路径，默认为当前目录下的config.yaml
+        
+    Returns:
+        AppConfig: 应用配置对象
+        
+    Raises:
+        FileNotFoundError: 配置文件不存在
+    """
     if config_path is None:
         config_path = os.environ.get(
             "CONFIG_PATH", 
@@ -107,20 +127,15 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
     with open(config_path, 'r', encoding='utf-8') as f:
         config_data = yaml.safe_load(f)
     
-    user_config_data = config_data.get('user', {})
-    user_config = UserConfig(
-        user_name=user_config_data.get('user_name', os.environ.get('USER_NAME', 'User')),
-        bot_name=user_config_data.get('bot_name', os.environ.get('BOT_NAME', 'ShitBot')),
-        bot_prompt=user_config_data.get('bot_prompt', os.environ.get('BOT_PROMPT', '默认'))
-    )
-    
     ai_config_data = config_data.get('ai', {})
     ai_config = AIConfig(
         api_key=ai_config_data.get('api_key', os.environ.get('AI_API_KEY', '')),
         value=ai_config_data.get('value', 'zai'),
-        model=ai_config_data.get('model', 'MiniMax-Text-01')
+        model=ai_config_data.get('model', 'MiniMax-Text-01'),
+        base_url=ai_config_data.get('base_url')
     )
     
+    # 博查搜索配置
     bocha_config_data = config_data.get('bocha', {})
     bocha_config = BochaConfig(
         api_key=bocha_config_data.get('api_key', os.environ.get('BOCHA_API_KEY', '')),
@@ -128,11 +143,13 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         index_name=bocha_config_data.get('index_name', 'news')
     )
     
+    # 浏览器配置
     browser_config_data = config_data.get('browser', {})
     browser_config = BrowserConfig(
         playwright_browsers_path=browser_config_data.get('playwright_browsers_path')
     )
     
+    # SMTP邮件配置
     email_config_data = config_data.get('email', {})
     email_config = EmailConfig(
         smtp_server=email_config_data.get('smtp_server', 'smtp.gmail.com'),
@@ -142,16 +159,29 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
         use_tls=email_config_data.get('use_tls', True)
     )
     
+    # IMAP邮件配置
+    imap_config_data = config_data.get('imap', {})
+    imap_config = IMAPConfig(
+        imap_server=imap_config_data.get('imap_server', 'imap.gmail.com'),
+        imap_port=imap_config_data.get('imap_port', 993),
+        email=imap_config_data.get('email', ''),
+        password=imap_config_data.get('password', ''),
+        use_ssl=imap_config_data.get('use_ssl', True)
+    )
+    
+    # 停止配置
     stop_config_data = config_data.get('stop', {})
     stop_config = StopConfig(
         file=stop_config_data.get('file', [])
     )
     
+    # Tavily配置
     tavily_config_data = config_data.get('tavily', {})
     tavily_config = TavilyConfig(
         key=tavily_config_data.get('key', os.environ.get('TAVILY_API_KEY', ''))
     )
     
+    # 网页搜索配置
     web_search_config_data = config_data.get('web_search', {})
     web_search_config = WebSearchConfig(
         web_search_ID=web_search_config_data.get('web_search_ID', 1)
@@ -160,11 +190,11 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
     default_provider = config_data.get('default_provider', 'ai')
     
     return AppConfig(
-        user=user_config,
         ai=ai_config,
         bocha=bocha_config,
         browser=browser_config,
         email=email_config,
+        imap=imap_config,
         stop=stop_config,
         tavily=tavily_config,
         web_search=web_search_config,
@@ -173,15 +203,18 @@ def load_config(config_path: Optional[str] = None) -> AppConfig:
 
 
 def create_default_config(config_path: str = "config.yaml"):
+    """
+    创建默认配置文件
+    
+    Args:
+        config_path: 配置文件路径
+    """
     default_config = {
-        'user': {
-            'user_name': 'User',
-            'bot_name': 'ShitBot'
-        },
         'ai': {
             'api_key': '',
             'value': 'zai',
-            'model': 'MiniMax-Text-01'
+            'model': 'MiniMax-Text-01',
+            'base_url': ''
         },
         'bocha': {
             'api_key': '',
@@ -197,6 +230,13 @@ def create_default_config(config_path: str = "config.yaml"):
             'email': '',
             'password': '',
             'use_tls': True
+        },
+        'imap': {
+            'imap_server': 'imap.gmail.com',
+            'imap_port': 993,
+            'email': '',
+            'password': '',
+            'use_ssl': True
         },
         'stop': {
             'file': []
@@ -262,13 +302,7 @@ def setup_wizard(config_path: str = "config.yaml"):
         style="cyan"
     ))
     
-    print("\n[1/5] 用户设置")
-    print("-" * 40)
-    
-    user_name = Prompt.ask("请输入您的名字", default="User")
-    bot_name = Prompt.ask("请输入机器人名字", default="ShitBot")
-    bot_prompt = Prompt.ask("请输入机器人语气提示词,例如：请用一个智能助手的语气回答", default="请用一个智能助手的语气回答")
-    print("\n[2/5] AI API 设置")
+    print("\n[1/5] AI API 设置")
     print("-" * 40)
     print("选择 AI 模型:")
     for i, model in enumerate(models, 1):
@@ -284,7 +318,7 @@ def setup_wizard(config_path: str = "config.yaml"):
     print("填写使用的模型")
     model = Prompt.ask("请输入使用的模型", default="")   
     
-    print("\n[3/5] 网页搜索服务设置")
+    print("\n[2/5] 网页搜索服务设置")
     print("-" * 40)
     print("选择默认的网页搜索服务:")
     print("  1. 博查搜索 (Bocha)")
@@ -309,7 +343,7 @@ def setup_wizard(config_path: str = "config.yaml"):
         
         tavily_api_key = Prompt.ask("请输入 Tavily 搜索 API 密钥", default="")
     
-    print("\n[4/5] 邮件服务设置")
+    print("\n[3/5] SMTP邮件发送服务设置")
     print("-" * 40)
     print("用于发送邮件的 SMTP 服务器配置")
     print("常见邮箱服务商配置:")
@@ -320,10 +354,26 @@ def setup_wizard(config_path: str = "config.yaml"):
     print("注意: 使用 Gmail 需要生成应用专用密码")
     print("按 Enter 跳过（后续可随时配置）")
     
-    email_address = Prompt.ask("请输入邮箱地址", default="")
-    email_password = Prompt.ask("请输入邮箱密码或授权码", default="")
+    smtp_email = Prompt.ask("请输入邮箱地址", default="")
+    smtp_password = Prompt.ask("请输入邮箱密码或授权码", default="")
     smtp_server = Prompt.ask("请输入 SMTP 服务器地址", default="smtp.gmail.com")
     smtp_port = Prompt.ask("请输入 SMTP 端口", default="587")
+    
+    print("\n[4/5] IMAP邮件读取服务设置")
+    print("-" * 40)
+    print("用于读取邮件的 IMAP 服务器配置")
+    print("常见邮箱服务商配置:")
+    print("  - Gmail: imap.gmail.com:993")
+    print("  - QQ邮箱: imap.qq.com:993")
+    print("  - 163邮箱: imap.163.com:993")
+    print("  - Outlook: imap-mail.outlook.com:993")
+    print("注意: 使用 Gmail 需要生成应用专用密码")
+    print("按 Enter 跳过（后续可随时配置）")
+    
+    imap_email = Prompt.ask("请输入邮箱地址", default="")
+    imap_password = Prompt.ask("请输入邮箱密码或授权码", default="")
+    imap_server = Prompt.ask("请输入 IMAP 服务器地址", default="imap.gmail.com")
+    imap_port = Prompt.ask("请输入 IMAP 端口", default="993")
     
     print("\n[5/5] 禁止访问文件夹设置")
     print("-" * 40)
@@ -331,25 +381,21 @@ def setup_wizard(config_path: str = "config.yaml"):
     file_num = 1
     stop_file = []
     while True:
-        stop_file = Prompt.ask(f"[{file_num}]", default="")
-        if not stop_file:
+        stop_file_item = Prompt.ask(f"[{file_num}]", default="")
+        if not stop_file_item:
             break
-        stop_file.append(stop_file)
+        stop_file.append(stop_file_item)
         file_num += 1
 
     print("\n保存配置")
     print("-" * 40)
     
     config = {
-        'user': {
-            'user_name': user_name,
-            'bot_name': bot_name,
-            'bot_prompt': bot_prompt
-        },
         'ai': {
             'api_key': ai_api_key,
             'value': model_api,
-            'model': model
+            'model': model,
+            'base_url': ''
         },
         'bocha': {
             'api_key': bocha_api_key,
@@ -368,9 +414,16 @@ def setup_wizard(config_path: str = "config.yaml"):
         'email': {
             'smtp_server': smtp_server,
             'smtp_port': int(smtp_port),
-            'email': email_address,
-            'password': email_password,
+            'email': smtp_email,
+            'password': smtp_password,
             'use_tls': True
+        },
+        'imap': {
+            'imap_server': imap_server,
+            'imap_port': int(imap_port),
+            'email': imap_email,
+            'password': imap_password,
+            'use_ssl': True
         },
         'stop': {
             'file': stop_file
@@ -383,11 +436,10 @@ def setup_wizard(config_path: str = "config.yaml"):
     
     console.print(Panel(
         Text(f"✓ 配置已保存到: {config_path}\n\n"
-             f"用户名称: {user_name}\n"
-             f"机器人名称: {bot_name}\n"
              f"AI API: {'✓ 已配置' if ai_api_key else '○ 未配置'}\n"
              f"搜索 API: {'✓ 已配置' if not (int(web_search_id) == 0) else '○ 未配置'}\n"
-             f"邮件服务: {'✓ 已配置' if email_address else '○ 未配置'}\n\n"
+             f"SMTP邮件服务: {'✓ 已配置' if smtp_email else '○ 未配置'}\n"
+             f"IMAP邮件服务: {'✓ 已配置' if imap_email else '○ 未配置'}\n\n"
              "如需修改配置，可编辑 config.yaml 文件,或者执行init_project.py重新配置",
              justify="center"),
         title="配置完成",
@@ -395,3 +447,68 @@ def setup_wizard(config_path: str = "config.yaml"):
     ))
     
     return True
+
+
+@dataclass
+class SettingsConfig:
+    """用户偏好设置配置"""
+    default_workflow: str = "SOLE"
+    max_conversation_count: int = 10
+    token_saving_mode: bool = False
+    created_at: str = ""
+
+
+SETTINGS_PATH = str(Path(__file__).parent / ".shitbot" / "datas" / "settings.json")
+
+
+def load_settings(settings_path: Optional[str] = None) -> SettingsConfig:
+    """
+    加载用户偏好设置
+    
+    Args:
+        settings_path: 设置文件路径，默认为 .shitbot/datas/settings.json
+        
+    Returns:
+        SettingsConfig: 用户偏好设置对象
+    """
+    if settings_path is None:
+        settings_path = os.environ.get("SETTINGS_PATH", SETTINGS_PATH)
+    
+    if not os.path.exists(settings_path):
+        return SettingsConfig()
+    
+    with open(settings_path, 'r', encoding='utf-8') as f:
+        settings_data = json.load(f)
+    
+    return SettingsConfig(
+        default_workflow=settings_data.get('default_workflow', 'SOLE'),
+        max_conversation_count=settings_data.get('max_conversation_count', 10),
+        token_saving_mode=settings_data.get('token_saving_mode', False),
+        created_at=settings_data.get('created_at', '')
+    )
+
+
+def save_settings(settings: SettingsConfig, settings_path: Optional[str] = None) -> None:
+    """
+    保存用户偏好设置
+    
+    Args:
+        settings: 设置对象
+        settings_path: 设置文件路径
+    """
+    if settings_path is None:
+        settings_path = os.environ.get("SETTINGS_PATH", SETTINGS_PATH)
+    
+    settings_dir = os.path.dirname(settings_path)
+    if not os.path.exists(settings_dir):
+        os.makedirs(settings_dir, exist_ok=True)
+    
+    settings_data = {
+        'default_workflow': settings.default_workflow,
+        'max_conversation_count': settings.max_conversation_count,
+        'token_saving_mode': settings.token_saving_mode,
+        'created_at': settings.created_at
+    }
+    
+    with open(settings_path, 'w', encoding='utf-8') as f:
+        json.dump(settings_data, f, indent=4, ensure_ascii=False)

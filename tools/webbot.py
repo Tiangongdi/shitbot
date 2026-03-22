@@ -66,25 +66,22 @@ class WebBot:
             while iteration < max_iterations:
                 iteration += 1
                 
-                # 调用AI获取响应
                 response = self.ai.chat(messages)
                 
                 if response is None:
                     return "抱歉，AI 生成失败，请重试。"
                 
-                # 检查是否需要调用工具
-                tool_calls = self._parse_tool_calls(response.content)
+                msg = response.choices[0].message
+                tool_calls = self._parse_tool_calls(msg.content)
                 
                 if not tool_calls:
-                    # 没有工具调用，直接返回结果
                     self._task_history.append({
                         "task": task,
-                        "response": response.content,
+                        "response": msg.content,
                         "iterations": iteration
                     })
-                    return response.content
+                    return msg.content
                 
-                # 执行工具调用
                 tool_results = []
                 for tool_call in tool_calls:
                     tool_name = tool_call.get("name")
@@ -97,8 +94,7 @@ class WebBot:
                         "result": result
                     })
                     
-                    # 添加工具执行结果到消息历史
-                    messages.append(Message(role="assistant", content=response.content))
+                    messages.append(Message(role="assistant", content=msg.content))
                     messages.append(Message(
                         role="user", 
                         content=f"工具执行结果:\n{json.dumps(tool_results, ensure_ascii=False)}"
@@ -312,7 +308,7 @@ class WebBot:
             ]
             
             response = self.ai.chat(messages)
-            return response.content
+            return response.choices[0].message.content
             
         except Exception as e:
             return f"提取分析失败: {str(e)}"

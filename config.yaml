@@ -1,7 +1,7 @@
 ai:
   api_key: 4dec8407c87c3bc589e1b9b179568cda.flkj7EpJPOEupgaf
   value: zai
-  model: glm-5
+  model: glm-5-turbo
 bocha:
   api_key: sk-01431e386fd6426987ee3f30910ee62c
   base_url: https://api.bocha.com
@@ -16,10 +16,16 @@ browser:
 default_provider: ai
 email:
   email: shitbot@163.com
-  password: DRgZXAaRZ4tpmDj7
+  password: FWna434itEGiNwVJ
   smtp_port: 465
   smtp_server: smtp.163.com
   use_tls: true
+imap:
+  email: shitbot@163.com
+  password: FWna434itEGiNwVJ
+  imap_port: 993
+  imap_server: imap.163.com
+  use_ssl: true
 stop:
   file: []
 user:

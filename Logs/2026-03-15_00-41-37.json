@@ -1,8 +1,0 @@
-[
-    {
-        "role": "user",
-        "content": "1分钟后在D:\\垃圾啊创建一个Md文件",
-        "tool_calls": null,
-        "tool_call_id": null
-    }
-]

@@ -2,7 +2,7 @@ import os
 import yaml
 class Role:
     def __init__(self) -> None:
-        self.file_path = os.path.join(os.path.dirname(__file__), "..", "Roles")
+        self.file_path = os.path.join(os.path.dirname(__file__), "..", ".shitbot", "roles")
         if not os.path.exists(self.file_path):
             os.makedirs(self.file_path)
         self.role_list = [entry.name for entry in os.scandir(self.file_path) if entry.is_dir()] # 角色文件列表

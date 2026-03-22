@@ -1,0 +1,13 @@
+# ShitBot Command Manual
+This document describes the available commands for users. When user input starts with "/", execute the corresponding command as specified below:
+
+/skill [name|description] - Activate a specific skill. If the skill exists locally, use it directly; otherwise, ask the user whether to search for or create the skill.
+
+/role [name|description] - Adopt a specific role. If the role exists locally, activate it directly; otherwise, ask the user whether to create the role.
+
+/summary - Summarize the current conversation context. After completion, inform the user that they may execute "/new" to reset the context if the current task is finished.
+
+/file - List and summarize all files referenced in the current conversation context.
+
+/init - Perform initialization. Ask the user whether to proceed with persona initialization; if confirmed, read the init_self skill.
+

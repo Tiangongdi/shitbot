@@ -10,7 +10,6 @@ from rich.markdown import Markdown
 from rich import box
 from rich.live import Live
 from rich.spinner import Spinner
-from config import load_config
 
 class WelcomeScreen:
     """欢迎屏幕组件"""
@@ -73,7 +72,6 @@ class MessagePanel:
     
     def __init__(self):
         self.console = Console()
-        self.config = load_config()
         self._thinking_live = None
     
     def error(self, message: str):
@@ -86,7 +84,7 @@ class MessagePanel:
     
     def info(self, message: str):
         """显示信息消息"""
-        self.console.print(f"[blue]{self.config.user.bot_name} >[/blue]\n", Markdown(message))
+        self.console.print("[blue]ShitBot >[/blue]\n", Markdown(message))
     
     def success(self, message: str):
         """显示成功消息"""

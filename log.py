@@ -5,7 +5,7 @@ import json
 class Log:
     def __init__(self):
         self.log = []
-        self.log_path = os.path.join(os.path.dirname(__file__), ".", "Logs")  # 文件夹地址
+        self.log_path = os.path.join(os.path.dirname(__file__), ".",".shitbot", "logs")  # 文件夹地址
         self.timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         if not os.path.exists(self.log_path):
             os.makedirs(self.log_path)

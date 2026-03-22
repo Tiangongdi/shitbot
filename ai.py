@@ -16,6 +16,7 @@ class Message:
     content: str
     tool_calls: Optional[List[Dict[str, Any]]] = None
     tool_call_id: Optional[str] = None
+    token: Optional[Dict[str, Any]] = None
 
 # 定义 AI API 的选择数据结构
 @dataclass
@@ -74,9 +75,12 @@ class AIClient:
             }
             if self.tools:
                 kwargs["tools"] = self.tools
+            if self.config.ai.base_url:
+                kwargs["base_url"] = self.config.ai.base_url
+            
             response = completion(**kwargs)
-            self.log.add_log(response.choices[0].message)
-            return response.choices[0].message
+            self.log.add_log(response)
+            return response
         except Exception as e:
             print(f"AI生成解析错误: {e}")
             print(f"请求参数: {messages_for_api}")

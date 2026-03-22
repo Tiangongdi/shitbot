@@ -4,6 +4,8 @@
 
 **💩 A Powerful AI Assistant Terminal Application 💩**
 
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
@@ -19,6 +21,7 @@
 - [Tool Modules](#tool-modules)
 - [Skills System](#skills-system)
 - [Roles System](#roles-system)
+- [Security](#security)
 - [Usage Examples](#usage-examples)
 - [Project Structure](#project-structure)
 - [FAQ](#faq)
@@ -28,18 +31,20 @@
 
 ## 🎯 Introduction
 
-ShitBot is a powerful AI assistant terminal application that supports multiple AI APIs (ZhipuAI, Bocha), with complete browser automation, file operations, scheduled tasks, email sending, and more. Users can interact naturally with AI through a Claude Code-like terminal interface and instruct AI to complete various complex tasks.
+ShitBot is a powerful AI assistant terminal application that supports 15+ mainstream AI API platforms, with complete browser automation, file operations, scheduled tasks, email sending/receiving, code execution, and more. Users can interact naturally with AI through a Claude Code-like terminal interface and instruct AI to complete various complex tasks.
 
 **Key Highlights:**
-- 🤖 Multi-AI provider support (ZhipuAI GLM, Bocha Search)
-- 🌐 Complete browser automation capabilities
+- 🤖 Supports 15+ AI platforms (ZhipuAI, DeepSeek, Kimi, OpenAI, Claude, Gemini, etc.)
+- 🌐 Complete browser automation (Playwright + WebBot)
 - 📁 Powerful file operation functions
 - ⏰ Flexible scheduled task system
-- 📧 Email sending functionality
+- 📧 Email sending & receiving (SMTP + IMAP)
 - 💾 Intelligent memory management
 - 📚 Built-in documentation system
 - 🔧 Extensible Skills System
 - 🎭 Flexible Roles System
+- 🐍 Python code execution
+- 🛡️ Comprehensive security mechanisms
 - 🎨 Modern terminal interface
 
 ---
@@ -47,10 +52,28 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 ## ✨ Core Features
 
 ### 🤖 Multi-AI Provider Support
-- **Recommended** ZhipuAI (GLM): Supports GLM-4, GLM-5 and other models
-- **Bocha Search**: Professional web search API
-- Streaming response support
-- Easy provider switching
+
+Supports 15+ mainstream AI platforms worldwide, unified through OpenAI SDK compatible interfaces, easy to switch:
+
+| Type | Platform | Identifier |
+|------|----------|------------|
+| 🇨🇳 China | ZhipuAI (GLM) | `zai` |
+| 🇨🇳 China | DeepSeek | `deepseek` |
+| 🇨🇳 China | Moonshot (Kimi) | `moonshot` |
+| 🇨🇳 China | MiniMax | `minimax` |
+| 🇨🇳 China | Xiaomi (MiMo) | `xiaomi_mimo` |
+| 🇨🇳 China | Volcengine | `volcengine` |
+| 🇨🇳 China | Alibaba Cloud (DashScope) | `dashscope` |
+| 🌍 International | OpenAI (ChatGPT) | `openai` |
+| 🌍 International | Anthropic (Claude) | `anthropic` |
+| 🌍 International | Google (Gemini) | `gemini` |
+| 🌍 International | Cohere | `cohere` |
+| 🌍 International | Mistral | `mistral` |
+| 🌍 International | Groq | `groq` |
+| 🌍 International | Perplexity | `perplexity` |
+| 🌍 International | OpenRouter | `openrouter` |
+
+> 💡 All platforms are called through OpenAI SDK compatible interfaces. Just configure the corresponding `api_key`, `base_url`, and `model` to get started. For detailed configuration, refer to the `.shitbot/docs/AI_API_Platforms_OpenAI_SDK_Compatible` document.
 
 ### 🌐 Browser Automation
 - Playwright-based visual browser control
@@ -62,10 +85,16 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 
 ### 📁 File Operations
 - File read/write operations
+- File append content
 - File copy and move
 - Directory creation and management
 - Safe file deletion (requires user confirmation)
 - Forbidden path protection mechanism
+
+### 🐍 Code Execution
+- Run Python code snippets
+- Execute Python code files
+- Real-time code testing and validation
 
 ### ⏰ Scheduled Task System
 - One-time delayed execution
@@ -73,15 +102,16 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 - Daily scheduled execution
 - Task management (pause, resume, cancel)
 
-### 📧 Email Sending
-- SMTP protocol support
-- TLS/SSL encryption
-- Support for multiple email services
+### 📧 Email System
+- **Sending**: SMTP protocol with TLS/SSL encryption
+- **Reading**: IMAP protocol with folder browsing, email search, content retrieval
+- Support for multiple email services (163, Gmail, etc.)
 
 ### 💾 Intelligent Memory Management
 - Conversation memory saving
 - Historical memory retrieval
 - Intelligent memory summarization
+- Work file system (notes, todos, user profiles)
 
 ### 📚 Documentation System
 - Built-in tool usage documentation
@@ -89,16 +119,24 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 - Modular documentation management
 
 ### 🔧 Skills System
-- Support for Claude Code's Skill format
+- Modular skill extension with on-demand loading
 - Custom skill development
-- Modular capability extension
-- Built-in practical skills
+- Built-in skill creation tools
+- ClawHub public skill registry support
 
 ### 🎭 Roles System
-- Support for custom role settings
+- Custom role settings
 - Flexible role switching
-- Professional domain role support
+- Built-in code writing role
 - Role-specific behaviors and tool recommendations
+
+### 🛡️ Security Mechanisms
+- High-risk operation blocking (DB deletion, shutdown, privilege escalation)
+- Scheduled task security review
+- Mandatory file deletion confirmation
+- API key protection
+- Forbidden path protection
+- Prompt injection prevention
 
 ### 🎨 Modern Terminal Interface
 - Claude Code-like interaction experience
@@ -110,10 +148,10 @@ ShitBot is a powerful AI assistant terminal application that supports multiple A
 ## 💻 Requirements
 
 - **Python**: 3.8 or higher
-- **Operating System**: Windows 10/11 (tested on Windows environment)
+- **Operating System**: Windows 10/11 (primary test environment)
 - **Browser**: Microsoft Edge (Chromium version)
 - **Network**: Stable network connection
-- **API Keys**: ZhipuAI and/or Bocha API keys
+- **API Keys**: At least one AI platform's API key (see supported platforms above)
 
 ---
 
@@ -129,7 +167,6 @@ cd ShitBot
 ### 2. Create Virtual Environment
 
 ```bash
-# Execute in the project root directory
 python -m venv shitbot_env
 ```
 
@@ -149,8 +186,24 @@ source shitbot_env/bin/activate
 pip install -r requirements.txt
 ```
 
-### 5. Configure Project
-Execute `init_project.py` to initialize the project, which will prompt for API keys and other information.
+### 5. Initialize Configuration
+
+```bash
+# Copy configuration template
+cp config.example.yaml config.yaml
+# Copy agent info template
+cp .shitbot/Self.example.txt .shitbot/Self.txt
+```
+
+Edit `config.yaml` to fill in your API keys and email settings. Edit `.shitbot/Self.txt` to set the agent name and personality.
+
+Or run the initialization wizard for automatic setup:
+
+```bash
+python init_project.py
+```
+
+Follow the prompts to select an AI platform, enter API keys, agent info, etc. Configuration files will be generated automatically.
 
 ### 6. Run the Program
 
@@ -162,58 +215,91 @@ python main.py
 
 ## ⚙️ Configuration
 
-### Complete Configuration File Structure
+### Configuration File Structure
+
+Refer to `config.example.yaml` for the full configuration template. Key settings:
 
 ```yaml
-# AI Provider Configuration
+# AI Provider Configuration (supports 15+ platforms, see models.json)
 ai:
-  api_key: ""           # ZhipuAI API key (required)
-  value: ""             # API platform name
-  model: "glm-5"        # Model name
+  api_key: ""           # AI API key (required)
+  value: ""             # Platform identifier (e.g. zai/deepseek/moonshot/openai)
+  model: ""             # Model name (e.g. glm-5-turbo, deepseek-chat)
+  base_url: ""          # Custom API URL (optional, leave empty for default)
 
 # Bocha Search Configuration
 bocha:
-  api_key: ""           # Bocha API key (required)
+  api_key: ""           # Bocha API key
   base_url: ""          # API address
   index_name: "news"    # Search index
 
+# Tavily Search Configuration
+tavily:
+  key: ""               # Tavily API key
+
+# Web Search Configuration
+web_search:
+  web_search_ID: 2      # Search engine selection (1=Bocha, 2=Tavily)
+
 # Browser Configuration
 browser:
-  playwright_browsers_path: "D:\\playwright_browsers"  # Playwright browser path
+  playwright_browsers_path: ""  # Playwright browser path
 
 # Default Provider
 default_provider: "ai"
 
-# Email Configuration
+# Email Sending Configuration (SMTP)
 email:
-  email: "your_email@163.com"      # Sender email
-  password: "your_password"         # Email authorization code
-  smtp_server: "smtp.163.com"       # SMTP server
-  smtp_port: 465                    # SMTP port
-  use_tls: true                     # Use TLS
+  email: ""             # Sender email
+  password: ""          # Email authorization code
+  smtp_server: ""       # SMTP server
+  smtp_port: 465        # SMTP port
+  use_tls: true         # Use TLS
+
+# Email Reading Configuration (IMAP)
+imap:
+  email: ""             # Email address
+  password: ""          # Email authorization code
+  imap_server: ""       # IMAP server
+  imap_port: 993        # IMAP port
+  use_ssl: true         # Use SSL
 
 # Forbidden Access Paths
 stop:
-  file: []  # List of forbidden file paths
+  file: []
+```
 
-# User Configuration
-user:
-  bot_name: "Tomoling"              # AI assistant name
-  user_name: "User"                 # User name
-  bot_prompt: "You often say gugu gaga (penguin sounds)"  # AI personality setting
+### Agent Information Configuration
+
+Edit `.shitbot/Self.txt` to customize the agent identity:
+
+```
+# ShitBot Self-Information File
+
+## Name: Your Agent Name
+## Personality: Personality description
+## User: Your Username
+## User Introduction: User bio
 ```
 
 ### API Key Acquisition
 
-**ZhipuAI**
-1. Visit [ZhipuAI Open Platform](https://open.bigmodel.cn/)
-2. Register an account and apply for an API key
-3. Fill the key in the configuration file's `ai.api_key`
+| Platform | URL | Description |
+|----------|-----|-------------|
+| ZhipuAI | [open.bigmodel.cn](https://open.bigmodel.cn/) | Register and apply for API key |
+| DeepSeek | [platform.deepseek.com](https://platform.deepseek.com/) | Register to get API Key |
+| Moonshot (Kimi) | [platform.moonshot.cn](https://platform.moonshot.cn/) | Register and apply for API key |
+| MiniMax | [platform.minimaxi.com](https://platform.minimaxi.com/) | Register to get API Key |
+| Xiaomi (MiMo) | [platform.minimaxi.com](https://platform.minimaxi.com/) | Register to get API Key |
+| Volcengine | [console.volcengine.com](https://console.volcengine.com/) | Register and apply for API key |
+| Alibaba Cloud (DashScope) | [dashscope.aliyun.com](https://dashscope.aliyun.com/) | Register and apply for API key |
+| OpenAI | [platform.openai.com](https://platform.openai.com/) | Register to get API Key |
+| Anthropic (Claude) | [console.anthropic.com](https://console.anthropic.com/) | Register to get API Key |
+| Google (Gemini) | [ai.google.dev](https://ai.google.dev/) | Register to get API Key |
+| Bocha Search | [api.bocha.com](https://api.bocha.com/) | Register and apply for API key |
+| Tavily | [tavily.com](https://tavily.com/) | Register to get API Key |
 
-**Bocha Search**
-1. Visit [Bocha API Official Site](https://api.bocha.com/)
-2. Register an account and apply for an API key
-3. Fill the key in the configuration file's `bocha.api_key`
+> 💡 For detailed configuration of more platforms (`base_url`, model names, etc.), refer to the `.shitbot/docs/AI_API_Platforms_OpenAI_SDK_Compatible` document.
 
 ---
 
@@ -221,192 +307,201 @@ user:
 
 ShitBot provides rich tool modules, each with detailed usage documentation:
 
-### 📚 Documentation List
-
-| Document Name | Description |
-|--------------|-------------|
-| [ALL_TOOLS_GUIDE](Docs/ALL_TOOLS_GUIDE.md) | Complete Tool Usage Guide |
-| [SEARCH_TOOLS](Docs/SEARCH_TOOLS.md) | Search Tools Guide |
-| [FILE_TOOLS](Docs/FILE_TOOLS.md) | File Operation Tools Guide |
-| [COMMAND_TOOLS](Docs/COMMAND_TOOLS.md) | Command Line Tools Guide |
-| [EMAIL_TOOLS](Docs/EMAIL_TOOLS.md) | Email Tools Guide |
-| [TIMER_TOOLS](Docs/TIMER_TOOLS.md) | Timer Tools Guide |
-| [INPUT_TOOLS](Docs/INPUT_TOOLS.md) | Input Tools Guide |
-| [AI_API_Platforms_OpenAI_SDK_Compatible](Docs/AI_API_Platforms_OpenAI_SDK_Compatible.md) | AI API Platform Compatibility Document |
-
 ### 🔧 Tool Overview
 
-#### Web Search Module
-- `search_web` - Web search
-- `browse_page` - Web page browsing and content extraction
+#### 🌐 Web Search Module
+| Tool | Description |
+|------|-------------|
+| `search_web` | Web search |
+| `webbot_task` | Browser task execution (WebBot) |
 
-#### File Operation Module
-- `read_file` - Read file
-- `write_file` - Write file
-- `copy_file` - Copy file
-- `move_file` - Move file
-- `delete_file` - Delete file
-- `create_dir` - Create directory
-- `get_dir_content` - Get directory content
+#### 📁 File Operation Module
+| Tool | Description |
+|------|-------------|
+| `read_file` | Read file |
+| `write_file` | Write file |
+| `append_to_file` | Append content to file |
+| `copy_file` | Copy file |
+| `move_file` | Move file |
+| `delete_file` | Delete file (requires confirmation) |
+| `create_dir` | Create directory |
+| `get_dir_content` | Get directory content |
 
-#### System Command Module
-- `shell_command` - Execute shell commands
+#### 🐍 Code Execution Module
+| Tool | Description |
+|------|-------------|
+| `run_code` | Run Python code snippet |
+| `run_code_file` | Run Python code file |
 
-#### Email Sending Module
-- `send_email` - Send email
+#### 💻 System Command Module
+| Tool | Description |
+|------|-------------|
+| `shell_command` | Execute shell commands |
 
-#### Scheduled Task Module
-- `once_after` - One-time delayed execution
-- `interval` - Periodic execution
-- `daily_at` - Daily scheduled execution
-- `cancel` - Cancel scheduled task
-- `pause` - Pause scheduled task
-- `resume` - Resume scheduled task
-- `list` - List all scheduled tasks
+#### 📧 Email Module
+| Tool | Description |
+|------|-------------|
+| `send_email` | Send email (SMTP) |
+| `list_email_folders` | List email folders |
+| `get_email_list` | Get email list |
+| `get_email_content` | Get email detail content |
+| `search_emails` | Search emails |
+| `mark_email_read` | Mark email as read |
 
-#### User Interaction Module
-- `input` - User input
-- `input_y_or_n` - User confirmation
+#### ⏰ Scheduled Task Module
+| Tool | Description |
+|------|-------------|
+| `once_after` | One-time delayed execution |
+| `interval` | Periodic execution |
+| `daily_at` | Daily scheduled execution |
+| `cancel_timer` | Cancel scheduled task |
+| `pause_timer` | Pause scheduled task |
+| `resume_timer` | Resume scheduled task |
+| `list` | List all scheduled tasks |
 
-#### Memory Management Module
-- `save_memory` - Save current conversation memory
-- `get_memory` - Retrieve historical memory
+#### 💾 Memory Management Module
+| Tool | Description |
+|------|-------------|
+| `save_memory` | Save current conversation memory |
+| `get_memory` | Retrieve historical memory |
 
-#### Documentation Management Module
-- `get_doc_list` - List all readable documents
-- `get_doc` - Get document content
+#### 📚 Documentation Module
+| Tool | Description |
+|------|-------------|
+| `get_doc_list` | List all readable documents |
+| `get_doc` | Get document content |
+
+#### 🎭 Roles & Skills Module
+| Tool | Description |
+|------|-------------|
+| `get_role` | List all roles |
+| `get_skill` | List all skills |
 
 ---
 
 ## 🔧 Skills System
 
-ShitBot supports a modular skill extension system, where each skill is an independent functional package providing professional domain workflows and tool integrations.
+ShitBot supports a modular skill extension system, where each skill is an independent functional package providing professional domain workflows and tool integrations. Users can freely create and install skills to extend ShitBot's capabilities.
 
-### 📦 Built-in Skills List
+### 📦 Built-in Skills
 
 | Skill Name | Description |
 |-----------|-------------|
-| **skill-creator** | Create or update AgentSkills, used for designing, structuring, and packaging skills, source: [openclaw](https://github.com/openclaw/openclaw) |
-| **role-skill** | Create or update AgentRoles, used for defining role behaviors, skills, and tool recommendations |
+| **skill-creator** | Skill creation tool — design, build, and package custom skills |
+| **role-skill** | Role creation tool — define role behaviors, skills, and tool recommendations |
+| **clawhub** | Skill store — search and install community skills from ClawHub registry |
+| **init_self** | Agent initialization — configure agent initial state and parameters |
 
 ### 🎯 Skill Features
 
-- **Modular Design**: Each skill is independently packaged, easy to manage and extend
-- **Progressive Loading**: Skill content is loaded only when needed, saving context space
-- **Resource Packaging**: Supports packaging of scripts, reference documents, and resource files
-- **Custom Development**: Users can create their own skills as needed
+- **Modular Design**: Each skill is independently packaged
+- **Progressive Loading**: Skills loaded only when needed, saving context space
+- **Resource Packaging**: Supports scripts, references, and asset files
+- **Custom Development**: Create your own skills with `skill-creator`
+- **Community Ecosystem**: Discover and install community skills via `clawhub`
 
 ### 📝 How to Create Skills
 
-Refer to the `skill-creator` skill documentation to learn how to create custom skills.
+Use the built-in `skill-creator` skill and follow the prompts to create custom skills. You can also discover more skills from the community via `clawhub`.
 
 ---
 
 ## 🎭 Roles System
 
-ShitBot supports a flexible role system, where different roles have different professional capabilities and behavior patterns, allowing role switching based on task requirements.
+ShitBot supports a flexible role system with different professional capabilities and behavior patterns.
 
-### 👥 Built-in Roles List
+### 👥 Built-in Roles
 
 | Role Name | Description |
 |----------|-------------|
-| **GitHubUploader** | GitHub upload assistant role, helping users manage Git repositories and GitHub projects |
+| **Coder** | General-purpose code writing — supports multiple languages and project types |
 
 ### 🎨 Role Features
 
-- **Professional Domains**: Each role focuses on specific domains, providing professional services
-- **Behavioral Customization**: Roles have specific behavior patterns and response styles
-- **Tool Recommendations**: Recommends the most suitable tools based on role characteristics
-- **Flexible Switching**: Roles can be switched at any time based on task requirements
+- **Professional Domains**: Each role focuses on specific domains
+- **Behavioral Customization**: Specific behavior patterns and response styles
+- **Tool Recommendations**: Recommends suitable tools based on role characteristics
+- **Flexible Switching**: Switch roles anytime based on task requirements
 
 ### 📝 How to Create Roles
 
-Refer to the `role-skill` skill documentation to learn how to create custom roles.
+Use the built-in `role-skill` skill and follow the prompts to create custom roles.
+
+---
+
+## 🛡️ Security
+
+ShitBot includes a comprehensive security protection system:
+
+| Security Layer | Description |
+|---------------|-------------|
+| **High-Risk Operation Blocking** | Blocks DB deletion, shutdown, privilege escalation, remote pipe execution |
+| **Scheduled Task Review** | Pre-execution whitelist check, interval validation, resource monitoring |
+| **File Deletion Protection** | Any deletion requires explicit user confirmation; forbidden in scheduled tasks |
+| **API Key Protection** | Configuration secrets never disclosed to users |
+| **Forbidden Path Protection** | User-configurable forbidden file paths |
+| **Prompt Injection Prevention** | Filters directive content from external input |
+| **Audit Logging** | Critical operations logged to ERROR.md for traceability |
 
 ---
 
 ## 💡 Usage Examples
 
 ### Basic Conversation
-
 ```
 You: Hello, please introduce yourself
 
-AI: Gugu gaga! Hello! I'm Tomoling, an intelligent AI assistant. I can help you:
-1. Search web information
-2. Operate files
-3. Browse web pages
-4. Send emails
-5. Set up scheduled tasks
-6. Use various skills and roles
-... and many other features!
-
-How can I help you?
+AI: Hello! I'm ShitBot, an intelligent AI assistant. I can help you
+    search information, operate files, browse web pages, send/receive emails,
+    set scheduled tasks, run code... How can I help you?
 ```
 
 ### Web Search
-
 ```
 You: Help me search for the latest AI news
-
-AI: Okay, I'll search for the latest AI news for you.
-[Calling search_web tool]
-Found the following news:
-1. OpenAI releases GPT-5...
-2. Google launches Gemini 2.0...
-...
+AI: [Calling search_web tool] Found the following news...
 ```
 
 ### File Operations
-
 ```
-You: Help me read the d:\project\test.txt file
+You: Help me read d:\project\test.txt
+AI: [Calling read_file tool] File content...
+```
 
-AI: Okay, I'll read this file.
-[Calling read_file tool]
-File content:
-...
+### Email Reading
+```
+You: Check if I have any unread emails
+AI: [Calling get_email_list tool] You have 3 unread emails...
+```
+
+### Code Execution
+```
+You: Run a Python code to calculate Fibonacci sequence
+AI: [Calling run_code tool] Results...
 ```
 
 ### Scheduled Tasks
-
 ```
-You: Help me set up a daily 9 AM reminder
-
-AI: Okay, I'll set up a daily 9 AM reminder for you.
-[Calling daily_at tool]
-Scheduled task added: Execute reminder task daily at 9:0
+You: Set up a daily 9 AM email check
+AI: [Calling daily_at tool] Scheduled task set...
 ```
 
 ### Browser Control
-
 ```
-You: Help me open Baidu and search for "artificial intelligence"
-
-AI: Okay, I'll open Baidu and search for "artificial intelligence".
-[Calling browse_page tool]
-Visiting Baidu...
-Search results obtained...
+You: Open Baidu and search for "artificial intelligence"
+AI: [Calling webbot_task tool] Visiting Baidu...
 ```
 
-### Using Skills
+### Install Community Skills
+```
+You: Search for a PPT generation skill
+AI: [Using clawhub skill] Found the following related skills...
+```
 
+### Create Custom Skills
 ```
 You: Help me create a new skill
-
-AI: Okay, I'll help you create a new skill.
-[Using skill-creator skill]
-Please tell me the skill name and purpose...
-```
-
-### Switching Roles
-
-```
-You: I want you to help me analyze the market situation
-
-AI: Okay, let me switch to the market analyst role.
-[Switching to MarketAnalyst role]
-Now I'm a professional market analyst, I can help you with market research and competitive analysis...
+AI: [Using skill-creator skill] Please tell me the skill name and purpose...
 ```
 
 ---
@@ -415,127 +510,133 @@ Now I'm a professional market analyst, I can help you with market research and c
 
 ```
 ShitBot/
-├── Docs/                   # Documentation directory
-│   ├── ALL_TOOLS_GUIDE.md  # Complete tools guide
-│   ├── SEARCH_TOOLS.md     # Search tools guide
-│   ├── FILE_TOOLS.md       # File tools guide
-│   ├── COMMAND_TOOLS.md    # Command tools guide
-│   ├── EMAIL_TOOLS.md      # Email tools guide
-│   ├── TIMER_TOOLS.md      # Timer tools guide
-│   ├── INPUT_TOOLS.md      # Input tools guide
-│   ├── AI_API_Platforms_OpenAI_SDK_Compatible.md  # AI API Platform Compatibility Document
-│   ├── HELLO.md            # Tool usage guide
-│   └── Write_Doc.md        # Documentation writing guide
-├── Skills/                 # Skills directory
-│   ├── skill-creator/      # Skill creation tool
-│   ├── role-skill/         # Role creation tool
-│   ├── market-research/    # Market research skill
-│   └── github-uploader/    # GitHub upload assistant
-├── Roles/                  # Roles directory
-│   ├── Coder/              # Programmer role
-│   ├── MarketAnalyst/      # Market analyst role
-│   ├── VideoScriptWriter/  # Video script writer role
-│   └── GitHubUploader/     # GitHub upload assistant role
-├── memory/                 # Memory storage directory
-├── prompt/                 # Prompts directory
-├── tools/                  # Tools module directory
-├── Logs/                   # Logs directory
-├── ai.py                   # AI client
-├── bot.py                  # Bot core logic
-├── config.py               # Configuration management
-├── main.py                 # Main program entry
-├── memory.py               # Memory management
-├── prompt.py               # Prompt management
-├── terminal.py             # Terminal interface
-├── tool.py                 # Tool definition and execution
-├── ui_components.py        # UI components
-├── log.py                  # Log management
-├── init_project.py         # Project initialization script
-├── config.yaml             # Configuration file
-├── requirements.txt        # Dependencies list
-└── README.md               # Project documentation
+├── .gitignore                         # Git ignore rules
+├── config.example.yaml                # Config template (copy to config.yaml)
+├── models.json                        # Supported AI platforms list
+├── requirements.txt                   # Dependencies list
+├── README_CN.md                       # Chinese documentation
+├── README_EN.md                       # English documentation
+│
+├── .shitbot/                          # ShitBot core data directory
+│   ├── Self.example.txt               # Agent info template (copy to Self.txt)
+│   ├── Safe.txt                       # Safety rules
+│   ├── docs/                          # Built-in documentation
+│   │   ├── ALL_TOOLS_GUIDE.md         # Complete tools guide
+│   │   ├── SEARCH_TOOLS.md            # Search tools guide
+│   │   ├── FILE_TOOLS.md              # File tools guide
+│   │   ├── COMMAND_TOOLS.md           # Command line tools guide
+│   │   ├── EMAIL_TOOLS.md             # Email tools guide
+│   │   ├── EMAIL_READER_GUIDE.md      # Email reader guide
+│   │   ├── TIMER_TOOLS.md             # Timer tools guide
+│   │   ├── AI_API_Platforms_*.md      # AI API platform compatibility
+│   │   └── Write_Doc.md               # Documentation writing guide
+│   ├── skills/                        # Skills directory
+│   │   ├── skill-creator/             # [Built-in] Skill creation tool
+│   │   ├── role-skill/                # [Built-in] Role creation tool
+│   │   ├── clawhub/                   # [Built-in] ClawHub skill store
+│   │   └── init_self/                 # [Built-in] Agent initialization
+│   ├── roles/                         # Roles directory
+│   │   └── Coder/                     # [Built-in] Code writing role
+│   ├── workfile/                      # Work files (placeholder files, auto-filled at runtime)
+│   │   ├── NOTE.md                    # Notes
+│   │   ├── TODO.md                    # Long-term todos
+│   │   ├── DAYTODO.md                 # Daily todos
+│   │   ├── USER.md                    # User info
+│   │   ├── ERROR.md                   # Error logs
+│   │   ├── BLACKLIST.md               # Command blacklist
+│   │   └── temp/                      # Temporary files
+│   ├── memory/                        # Memory storage (auto-generated at runtime)
+│   ├── logs/                          # Runtime logs (auto-generated at runtime)
+│   └── datas/                         # Data files (auto-generated at runtime)
+│
+├── tools/                             # Tools module directory
+│   ├── bocha.py                       # Bocha search
+│   ├── tavily_api.py                  # Tavily search
+│   ├── email_reader.py                # Email reader (IMAP)
+│   ├── doc.py                         # Document management
+│   ├── memory_bot.py                  # Memory bot
+│   ├── playwiright.py                 # Browser automation
+│   ├── webbot.py                      # WebBot
+│   ├── role.py                        # Role management
+│   ├── skill.py                       # Skill management
+│   ├── safe.py                        # Security check
+│   ├── timer.py                       # Scheduled tasks
+│   └── venv_manager.py                # Virtual environment manager
+│
+├── ai.py                              # AI client
+├── bot.py                             # Bot core logic
+├── config.py                          # Configuration management
+├── main.py                            # Main program entry
+├── memory.py                          # Memory management
+├── prompt.py                          # Prompt management
+├── terminal.py                        # Terminal interface
+├── tool.py                            # Tool definition and execution
+├── ui_components.py                   # UI components
+├── log.py                             # Log management
+├── token_tracker.py                   # Token tracking
+├── workflows.py                       # Workflow management
+└── init_project.py                    # Project initialization script
 ```
+
+> **Note**: The following files/directories are excluded from the repository via `.gitignore`:
+> - `config.yaml` — Contains sensitive API keys. Use `config.example.yaml` as a template.
+> - `.shitbot/Self.txt` — User's personalized agent config. Use `Self.example.txt` as a template.
+> - `.shitbot/workfile/` — Runtime work files (empty placeholders are provided).
+> - `.shitbot/memory/`, `.shitbot/logs/`, `.shitbot/datas/` — Auto-generated at runtime.
+> - `shitbot_env/`, `code_venv/` — Python virtual environments.
+> - User-installed skills and user-created roles.
 
 ---
 
 ## ❓ FAQ
 
 ### 1. Program Won't Start
-
-**Problem**: Missing dependencies or configuration file doesn't exist
-
-**Solution**:
 ```bash
 # Ensure dependencies are installed
 pip install -r requirements.txt
-
-# Configuration file will be created automatically if it doesn't exist
-# Edit config.yaml and fill in API keys
+# Ensure config file exists
+cp config.example.yaml config.yaml
+# Edit config.yaml and fill in your API keys
+# Run initialization script
+python init_project.py
 ```
 
 ### 2. API Call Failed
-
-**Problem**: Authentication error or connection failure
-
-**Solution**:
 1. Check if API key is correct
 2. Confirm network connection is normal
 3. Check if API quota is sufficient
-4. Confirm base_url configuration is correct
+4. Confirm `base_url` and `model` configuration is correct
+5. Refer to `.shitbot/docs/AI_API_Platforms_OpenAI_SDK_Compatible` for platform-specific settings
 
 ### 3. Browser Won't Start
-
-**Problem**: Playwright browser related errors
-
-**Solution**:
 ```bash
 # Install Playwright browser
 playwright install chromium
-
 # Or specify browser path in config.yaml
-browser:
-  playwright_browsers_path: "D:\\playwright_browsers"
 ```
 
-### 4. File Operation Denied
+### 4. Email Sending/Reading Failed
+1. Confirm using **email authorization code** (not login password)
+2. Check SMTP/IMAP server configuration
+3. Confirm port and encryption settings
+4. For 163 email: enable IMAP/SMTP service in settings
 
-**Problem**: Prompt says "Operation is in the forbidden list"
-
-**Solution**:
-Check the `stop.file` configuration in `config.yaml` to ensure the target path is not in the forbidden list.
-
-### 5. Email Sending Failed
-
-**Problem**: Email sending returns error
-
-**Solution**:
-1. Confirm email authorization code is correct (not login password)
-2. Check SMTP server configuration
-3. Confirm SMTP port and TLS settings are correct
-
-### 6. Scheduled Task Not Executing
-
-**Problem**: Scheduled task set but not executing
-
-**Solution**:
+### 5. Scheduled Task Not Executing
 1. Confirm the program is running
 2. Use the `list` tool to view task status
 3. Check if task is paused
 
-### 7. Skill or Role Cannot Be Loaded
+### 6. How to Install More Skills
+Use the built-in `clawhub` skill to search and install community skills, or use `skill-creator` to create custom skills.
 
-**Problem**: Prompt says skill or role doesn't exist
-
-**Solution**:
-1. Check if the corresponding folder exists in Skills or Roles directory
-2. Confirm SKILL.md or ROLE.md file format is correct
-3. Refer to documentation to learn how to create custom skills and roles
+### 7. File Operation Denied
+Check the `stop.file` configuration in `config.yaml` to ensure the target path is not in the forbidden list.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions and issue reports are welcome!
+Contributions of code, skills, roles, or issue reports are welcome!
 
 ### Contribution Steps
 
@@ -545,20 +646,11 @@ Contributions and issue reports are welcome!
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Create a Pull Request
 
-### Code Standards
-
-- Follow PEP 8 coding standards
-- Add necessary comments and documentation
-- Write unit tests
-
 ### Contributing Skills or Roles
 
-Welcome to contribute new skills or roles to ShitBot:
-
-1. **Contribute Skills**: Create new skill folders in the `Skills/` directory
-2. **Contribute Roles**: Create new role folders in the `Roles/` directory
-3. Develop following the format of existing skills and roles
-4. Submit a Pull Request with detailed feature description
+1. **Skills**: Create new folder in `.shitbot/skills/` with `SKILL.md`
+2. **Roles**: Create new folder in `.shitbot/roles/` with `ROLE.md`
+3. Follow the format of existing skills and roles
 
 ---
 
@@ -568,19 +660,8 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 
 ---
 
-## 📮 Contact
-
-For questions or suggestions, feel free to contact us through:
-
-- Submit an Issue
-- Email: shitbot@163.com
-
----
-
 <div align="center">
 
 **Made with ❤️ by ShitBot Team**
-
-Gugu gaga! 🐧
 
 </div>

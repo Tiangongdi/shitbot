@@ -123,9 +123,9 @@ class ShitBotTerminal:
         self.should_stop = False
         escape_listener.set_callbacks(self.bot, self.ui)
     async def handle_command(self, command: str) -> bool:
-        command = command.strip()
+        command = command.strip() # 移除首尾空格        
         
-        if not command:
+        if not command: # 空命令
             return False
         
         if command.startswith('/'):
@@ -135,8 +135,20 @@ class ShitBotTerminal:
             if cmd == '/help':
                 self.ui.show_help([
                     {"name": "/help", "description": "显示此帮助信息"},
+                    {"name": "/skill", "description": "激活特定技能 (例: /skill coder)"},
+                    {"name": "/role", "description": "采用特定角色 (例: /role assistant)"},
+                    {"name": "/summary", "description": "总结当前对话上下文"},
+                    {"name": "/file", "description": "列出并总结当前对话中引用的所有文件"},
+                    {"name": "/init", "description": "执行初始化"},
                     {"name": "/clear", "description": "清除屏幕"},
-                    {"name": "/exit", "description": "退出程序"}
+                    {"name": "/new", "description": "开始新会话"},
+                    {"name": "/token", "description": "查看 Token 使用统计"},
+                    {"name": "/workflow", "description": "查看/切换工作流 (例: /workflow coder)"},
+                    {"name": "/add", "description": "添加文件到禁止列表 (例: /add /path/to/file)"},
+                    {"name": "/remove", "description": "从禁止列表删除文件 (例: /remove /path/to/file)"},
+                    {"name": "/list", "description": "查看禁止文件列表"},  
+                    {"name": "/exit", "description": "退出程序"},
+                    {"name": "Esc", "description": "终止当前任务"}
                 ])
                 return True
             
@@ -146,6 +158,7 @@ class ShitBotTerminal:
                 return True
             
             elif cmd == '/exit':
+                self.bot.save_token_usage(session_name="exit_command")
                 self.bot.shared_memory.clear()
                 self.ui.system("再见！")
                 await self.cleanup()
@@ -171,14 +184,35 @@ class ShitBotTerminal:
                 self._list_stop_files()
                 return True
             
-            elif cmd == '/clear_memory':
-                self.bot.shared_memory.clear()
-                self.ui.success("记忆已清空")
+            elif cmd == '/new':
+                self.bot.clear_memory(save_token=True, session_name="new_command")
+                self.ui.success("新会话已开始，Token 数据已保存")
+                return True
+            
+            elif cmd == '/token':
+                token_summary = self.bot.get_token_summary()
+                self.ui.system(f"\n{token_summary}")
+                return True
+            
+            elif cmd == '/workflow':
+                if not args:
+                    current = self.bot.workflow.get_current_workflow()
+                    available = self.bot.workflow.get_available_workflows()
+                    self.ui.system(f"\n当前工作流: {current}")
+                    self.ui.info(f"可用工作流: {', '.join(available)}")
+                    self.ui.info("使用方法: /workflow <workflow_name> (例如: /workflow coder)")
+                else:
+                    workflow_name = args[0].lower()
+                    try:
+                        self.bot.set_workflow(workflow_name)
+                        self.bot.clear_memory(save_token=True, session_name=f"workflow_switch_{workflow_name}")
+                        self.ui.success(f"已切换到工作流: {workflow_name}，新会话已开始")
+                    except ValueError as e:
+                        self.ui.error(str(e))
                 return True
             
             else:
-                self.ui.error(f"未知命令: {cmd}")
-                return True
+                return False    
         
         return False
     
@@ -221,15 +255,11 @@ class ShitBotTerminal:
         import yaml
         with open(self.config_path, 'w', encoding='utf-8') as f:
             yaml.dump({
-                'user': {
-                    'user_name': self.config.user.user_name,
-                    'bot_name': self.config.user.bot_name,
-                    'bot_prompt': self.config.user.bot_prompt
-                },
                 'ai': {
                     'api_key': self.config.ai.api_key,
                     'value': self.config.ai.value,
-                    'model': self.config.ai.model
+                    'model': self.config.ai.model,
+                    'base_url': self.config.ai.base_url or ''
                 },
                 'bocha': {
                     'api_key': self.config.bocha.api_key,
@@ -264,8 +294,15 @@ class ShitBotTerminal:
         self.ui.show_welcome()
         self.ui.show_help([
             {"name": "/help", "description": "显示此帮助信息"},
+            {"name": "/skill", "description": "激活特定技能 (例: /skill coder)"},
+            {"name": "/role", "description": "采用特定角色 (例: /role assistant)"},
+            {"name": "/summary", "description": "总结当前对话上下文"},
+            {"name": "/file", "description": "列出并总结当前对话中引用的所有文件"},
+            {"name": "/init", "description": "执行初始化"},
             {"name": "/clear", "description": "清除屏幕"},
-            {"name": "/clear_memory", "description": "清空对话记忆"},
+            {"name": "/new", "description": "开始新会话"},
+            {"name": "/token", "description": "查看 Token 使用统计"},
+            {"name": "/workflow", "description": "查看/切换工作流 (例: /workflow coder)"},
             {"name": "/add", "description": "添加文件到禁止列表 (例: /add /path/to/file)"},
             {"name": "/remove", "description": "从禁止列表删除文件 (例: /remove /path/to/file)"},
             {"name": "/list", "description": "查看禁止文件列表"},  
@@ -302,6 +339,9 @@ class ShitBotTerminal:
                         self.should_stop = False
                         self.bot.set_stop_flag(False)
             except KeyboardInterrupt:
+                token_summary = self.bot.get_token_summary()
+                self.ui.system(f"\nToken 使用统计:\n{token_summary}")
+                self.bot.save_token_usage(session_name="keyboard_interrupt")
                 self.bot.shared_memory.clear()
                 self.ui.system("\n检测到中断信号，输入 /exit 退出")
             except Exception as e:

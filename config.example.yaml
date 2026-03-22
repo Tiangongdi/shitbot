@@ -1,0 +1,54 @@
+# ========================
+# ShitBot 配置文件示例
+# 复制此文件为 config.yaml 并填入你的实际配置
+# cp config.example.yaml config.yaml
+# ========================
+
+# AI 提供商配置
+ai:
+  api_key: ""           # AI API 密钥（必填）
+  value: "zai"          # API 平台标识（zai/deepseek/minimax/moonshot 等）
+  model: "MiniMax-Text-01"  # 模型名称
+  base_url: ""          # 自定义 API 地址（可选，留空使用默认）
+
+# 博查搜索配置
+bocha:
+  api_key: ""           # 博查 API 密钥
+  base_url: "https://api.bocha.com"
+  index_name: "news"
+
+# Tavily 搜索配置
+tavily:
+  key: ""               # Tavily API 密钥
+
+# 网页搜索配置
+# web_search_ID: 1=博查搜索, 2=Tavily搜索
+web_search:
+  web_search_ID: 1
+
+# 浏览器配置
+browser:
+  playwright_browsers_path: ""  # Playwright 浏览器路径（可选）
+
+# 默认提供商
+default_provider: "ai"
+
+# 邮件发送配置（SMTP）
+email:
+  smtp_server: "smtp.163.com"   # SMTP 服务器地址
+  smtp_port: 465                # SMTP 端口
+  email: ""                     # 发件邮箱地址
+  password: ""                  # 邮箱授权码（非登录密码）
+  use_tls: true                 # 是否使用 TLS
+
+# 邮件读取配置（IMAP）
+imap:
+  imap_server: "imap.163.com"   # IMAP 服务器地址
+  imap_port: 993                # IMAP 端口
+  email: ""                     # 邮箱地址
+  password: ""                  # 邮箱授权码（非登录密码）
+  use_ssl: true                 # 是否使用 SSL
+
+# 禁止访问的文件路径
+stop:
+  file: []

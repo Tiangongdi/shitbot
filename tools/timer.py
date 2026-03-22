@@ -28,6 +28,8 @@ from enum import Enum
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+TIMER_JSON_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", "timer.json")
+
 
 class TaskStatus(Enum):
     """任务状态枚举"""
@@ -294,7 +296,7 @@ class Timer:
     def _load_tasks(self):
         """从文件加载任务"""
         try:
-            with open("timer.json", "r", encoding="utf-8") as f:
+            with open(TIMER_JSON_PATH, "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if not content:
                     return
@@ -429,12 +431,9 @@ class Timer:
             tasks_to_save = []
             
             for task in self.tasks.values():
-                # 跳过已取消且不再执行的临时任务
                 if not task.is_active and task.task_type == TaskType.ONCE.value:
                     continue
                 
-                # 对于已完成的一次性任务，可选择是否保留历史记录
-                # 这里选择保留，但可以根据需要调整
                 tasks_to_save.append(task.to_dict())
             
             data = {
@@ -442,7 +441,9 @@ class Timer:
                 "counter": self._task_counter
             }
             
-            with open("timer.json", "w", encoding="utf-8") as f:
+            os.makedirs(os.path.dirname(TIMER_JSON_PATH), exist_ok=True)
+            
+            with open(TIMER_JSON_PATH, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
                 
         except Exception as e:

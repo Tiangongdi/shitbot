@@ -4,6 +4,7 @@ from ai import Message,AIClient
 from prompt import BotPromt
 import json
 from datetime import datetime
+import os
 
 tools_definition = [
     {
@@ -38,7 +39,7 @@ tools_definition = [
 ]
 class memrry_tool:
     def __init__(self, memory_file: str = "memory.json"):
-        self.memory_file = memory_file
+        self.memory_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", memory_file)
         self.memory_doc = self.load_memory()
     def load_memory(self):
         try:
@@ -70,7 +71,7 @@ class memrry_tool:
             return {}
 class MemoryBot:
     def __init__(self, memory_file: str = "memory.json"):
-        self.memory_file = memory_file
+        self.memory_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", memory_file)
         self.memory_doc = self.load_memory()
         self.prompt = BotPromt()
         self.ai = AIClient(
@@ -94,9 +95,9 @@ class MemoryBot:
         response = self.ai.chat(memory)
         if response is None:
             return
-        # 创建一个时间戳
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        self.memory_doc[timestamp]=response.content
+        content = response.choices[0].message.content
+        self.memory_doc[timestamp]=content
         # 将old_memory转换为可序列化的字典格式
         serializable_memory = []
         for msg in old_memory:
@@ -120,9 +121,12 @@ class MemoryBot:
             if msg.tool_call_id:
                 msg_dict["tool_call_id"] = msg.tool_call_id
             serializable_memory.append(msg_dict)
-        # 保存到./memory/{timestamp}.json
-        with open(f"./memory/{timestamp}.json", "w", encoding="utf-8") as f:
+            return content
+        memory_path = f"./.shitbot/memory/{timestamp}.json"
+        os.makedirs(os.path.dirname(memory_path), exist_ok=True)
+        with open(memory_path, "w", encoding="utf-8") as f:
             json.dump(serializable_memory, f, ensure_ascii=False, indent=4)
+        os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
         with open(self.memory_file, "w", encoding="utf-8") as f:
             json.dump(self.memory_doc, f, ensure_ascii=False, indent=4)
     def get_memory(self,q:str):
@@ -134,14 +138,16 @@ class MemoryBot:
         response = self.ai.chat(message)
         if response is None:
             return None
-        while hasattr(response, 'tool_calls') and response.tool_calls:
-            tool_messages = self.memory_tool.execute(response)
+        msg = response.choices[0].message
+        while hasattr(msg, 'tool_calls') and msg.tool_calls:
+            tool_messages = self.memory_tool.execute(msg)
             if tool_messages:
                 message.extend(tool_messages)
                 response = self.ai.chat(message)
+                msg = response.choices[0].message
             else:
                 break
-        return response.content
+        return msg.content
 
         
         

@@ -11,6 +11,80 @@ from email.utils import parseaddr
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 import re
+import imaplib
+
+
+import base64
+
+
+def imap_utf7_encode(s: str) -> str:
+    """
+    将字符串编码为 IMAP UTF-7 格式
+    IMAP 使用修改版的 UTF-7 编码来支持非 ASCII 字符
+    """
+    result = []
+    utf16_buffer = []
+    
+    for char in s:
+        if ord(char) < 128:
+            # ASCII 字符
+            if utf16_buffer:
+                # 先处理缓冲区中的 UTF-16 字符
+                utf16_bytes = ''.join(utf16_buffer).encode('utf-16be')
+                b64 = base64.b64encode(utf16_bytes).decode('ascii')
+                b64 = b64.rstrip('=')  # 移除填充
+                result.append('&' + b64 + '-')
+                utf16_buffer = []
+            if char == '&':
+                result.append('&-')
+            else:
+                result.append(char)
+        else:
+            # 非 ASCII 字符，加入缓冲区
+            utf16_buffer.append(char)
+    
+    # 处理剩余的 UTF-16 字符
+    if utf16_buffer:
+        utf16_bytes = ''.join(utf16_buffer).encode('utf-16be')
+        b64 = base64.b64encode(utf16_bytes).decode('ascii')
+        b64 = b64.rstrip('=')
+        result.append('&' + b64 + '-')
+    
+    return ''.join(result)
+
+
+def imap_utf7_decode(s: str) -> str:
+    """
+    解码 IMAP UTF-7 编码的字符串
+    IMAP 使用修改版的 UTF-7 编码来支持非 ASCII 字符
+    """
+    result = []
+    i = 0
+    while i < len(s):
+        if s[i] == '&':
+            end = s.find('-', i)
+            if end == -1:
+                result.append(s[i])
+                i += 1
+            elif end == i + 1:
+                result.append('&')
+                i = end + 1
+            else:
+                base64_part = s[i+1:end]
+                try:
+                    padding = 4 - len(base64_part) % 4
+                    if padding != 4:
+                        base64_part += '=' * padding
+                    decoded_bytes = base64_part.encode('ascii')
+                    bytes_data = base64.b64decode(decoded_bytes)
+                    result.append(bytes_data.decode('utf-16be'))
+                except Exception:
+                    result.append(s[i:end+1])
+                i = end + 1
+        else:
+            result.append(s[i])
+            i += 1
+    return ''.join(result)
 
 
 class EmailReader:
@@ -42,10 +116,19 @@ class EmailReader:
             连接结果
         """
         try:
+            # 添加 ID 命令到 imaplib（163邮箱需要）
+            imaplib.Commands["ID"] = "AUTH"
+            
             # 创建IMAP连接
             self.connection = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
             # 登录
             self.connection.login(self.email_address, self.password)
+            
+            # 发送 IMAP ID 命令（163邮箱需要，否则会报 Unsafe Login 错误）
+            args = ("name", "ShitBot", "contact", self.email_address, "version", "1.0.0", "vendor", "shitbot")
+            typ, dat = self.connection._simple_command('ID', '("' + '" "'.join(args) + '")')
+            self.connection._untagged_response(typ, dat, 'ID')
+            
             return {
                 "success": True,
                 "message": f"成功连接到 {self.imap_server}"
@@ -149,17 +232,24 @@ class EmailReader:
                 return {"success": False, "error": "获取文件夹列表失败"}
             
             folder_list = []
+            raw_folders = []  # 保存原始文件夹名称用于选择
             for folder in folders:
                 folder_str = folder.decode('utf-8')
                 # 提取文件夹名称
+                # IMAP 文件夹格式: (\HasNoChildren) "/" "文件夹名"
+                # 或: (\HasNoChildren) "." "文件夹名"
                 parts = folder_str.split('"')
                 if len(parts) >= 3:
                     folder_name = parts[-2]
-                    folder_list.append(folder_name)
+                    raw_folders.append(folder_name)
+                    # 解码 UTF-7 编码
+                    decoded_name = imap_utf7_decode(folder_name)
+                    folder_list.append(decoded_name)
             
             return {
                 "success": True,
                 "folders": folder_list,
+                "raw_folders": raw_folders,
                 "count": len(folder_list)
             }
         except Exception as e:
@@ -188,7 +278,8 @@ class EmailReader:
             # 选择文件夹
             status, data = self.connection.select(folder)
             if status != 'OK':
-                return {"success": False, "error": f"无法打开文件夹: {folder}"}
+                error_msg = data[0].decode('utf-8') if data else "未知错误"
+                return {"success": False, "error": f"无法打开文件夹 '{folder}': {error_msg}"}
             
             # 搜索邮件
             if unread_only:
