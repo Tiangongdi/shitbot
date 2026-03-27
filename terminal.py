@@ -122,6 +122,25 @@ class ShitBotTerminal:
         self.bot.init_prompt()
         self.should_stop = False
         escape_listener.set_callbacks(self.bot, self.ui)
+    
+    def get_status_bar_text(self):
+        """获取状态栏文本，显示当前模型、工作流和token使用情况"""
+        # 获取当前模型信息
+        provider = self.config.ai.value
+        model = self.config.ai.model
+        full_model = f"{provider}/{model}"
+        
+        # 获取当前工作流
+        workflow = self.bot.workflow.get_current_workflow()
+        
+        # 获取当前token使用情况
+        token_usage = self.bot.token_tracker.get_current_session_usage()
+        total_tokens = token_usage.total_tokens
+        prompt_tokens = token_usage.prompt_tokens
+        completion_tokens = token_usage.completion_tokens
+        
+        return f"[dim cyan]模型: {full_model} | 工作流: {workflow} | Token: {total_tokens} ({prompt_tokens}+{completion_tokens})[/dim cyan]"
+    
     async def handle_command(self, command: str) -> bool:
         command = command.strip() # 移除首尾空格        
         
@@ -315,6 +334,10 @@ class ShitBotTerminal:
         
         while True:
             try:
+                # 在输入前显示状态信息
+                status_text = self.get_status_bar_text()
+                self.ui.console.print(status_text)
+                
                 user_input = await self.session.prompt_async(
                    FormattedText([("class:user", "> ")]),
                     style=PromptStyle.from_dict({
@@ -366,4 +389,3 @@ class ShitBotTerminal:
                 await asyncio.sleep(0.01)
             except Exception:
                 break
-
