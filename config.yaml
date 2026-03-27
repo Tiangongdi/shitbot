@@ -1,7 +1,8 @@
 ai:
-  api_key: 4dec8407c87c3bc589e1b9b179568cda.flkj7EpJPOEupgaf
-  value: zai
-  model: glm-5-turbo
+  api_key: 11fb4af9-81ff-44ae-8027-6ba32706e7bf
+  value: volcengine
+  model: ark-code-latest
+  base_url: https://ark.cn-beijing.volces.com/api/coding/v3
 bocha:
   api_key: sk-01431e386fd6426987ee3f30910ee62c
   base_url: https://api.bocha.com
@@ -28,35 +29,15 @@ imap:
   use_ssl: true
 stop:
   file: []
-user:
-  bot_name: 偷摸零
-  bot_prompt: 你会经常说咕咕嘎嘎（企鹅叫）
-  user_name: 黎大白
 
 # MCP (Model Context Protocol) 配置
 # 通过 MCP 协议连接外部工具 Server，扩展 ShitBot 的能力
 # 文档: https://modelcontextprotocol.io/
 mcp:
-  enabled: false  # 设为 true 启用 MCP
+  enabled: false
   servers:
-    # 示例: 文件系统 Server (stdio 模式)
-    # - name: filesystem
-    #   transport: stdio
-    #   command: npx
-    #   args: ["-y", "@anthropic/mcp-filesystem-server", "D:\\project"]
-    #   description: 文件系统操作
-    #
-    # 示例: GitHub Server (stdio 模式)
-    # - name: github
-    #   transport: stdio
-    #   command: npx
-    #   args: ["-y", "@anthropic/mcp-github-server"]
-    #   env:
-    #     GITHUB_TOKEN: "your_github_token"
-    #   description: GitHub 操作
-    #
-    # 示例: 远程 Server (SSE 模式)
-    # - name: remote-service
-    #   transport: sse
-    #   url: http://localhost:8080/mcp
-    #   description: 远程工具服务
+    - name: howtocook-mcp
+      transport: stdio
+      command: npx
+      args: ["-y", "howtocook-mcp"]
+      description: 菜谱查询工具

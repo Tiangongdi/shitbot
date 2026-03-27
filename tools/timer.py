@@ -303,13 +303,38 @@ class Timer:
                 
                 data = json.loads(content)
                 self._task_counter = data.get("counter", 0)
+                now = datetime.now()
                 
                 for item in data.get("tasks", []):
                     try:
                         task = TimerTask.from_dict(item)
-                        # 恢复任务状态
+                        
                         if task.is_active and task.status == TaskStatus.RUNNING.value:
                             task.status = TaskStatus.PENDING.value
+                        
+                        if task.is_active:
+                            if task.task_type == TaskType.DAILY.value:
+                                if task.next_trigger and task.next_trigger <= now:
+                                    hour, minute = task.daily_time
+                                    next_trigger = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+                                    if next_trigger <= now:
+                                        next_trigger += timedelta(days=1)
+                                    task.next_trigger = next_trigger
+                            
+                            elif task.task_type == TaskType.ONCE.value:
+                                if task.target_time and task.target_time <= now:
+                                    task.is_active = False
+                                    task.status = TaskStatus.CANCELLED.value
+                            
+                            elif task.task_type == TaskType.INTERVAL.value:
+                                if task.next_trigger and task.next_trigger <= now:
+                                    intervals_passed = int((now - task.next_trigger).total_seconds() / task.interval) + 1
+                                    task.next_trigger = task.next_trigger + timedelta(seconds=intervals_passed * task.interval)
+                                    if task.interval_count is not None and task.interval_count > 0:
+                                        task.interval_count = max(0, task.interval_count - intervals_passed)
+                                        if task.interval_count == 0:
+                                            task.is_active = False
+                        
                         self.tasks[task.id] = task
                     except Exception as e:
                         pass

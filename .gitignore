@@ -128,3 +128,4 @@ tmp/
 .shitbot/MemoryBot.txt
 .shitbot/Sys.txt
 .shitbot/WebAgent.txt
+.shitbot/skills/summarize/
