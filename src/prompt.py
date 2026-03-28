@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from config import load_config
+from config.config import load_config
 
 
 class BotPromt:
@@ -17,7 +17,7 @@ class BotPromt:
             替换变量后的提示词内容
         """
         if prompt_dir is None:
-            prompt_dir = str(Path(__file__).parent / ".shitbot")
+            prompt_dir = str(Path(__file__).parent.parent / ".shitbot")
         
         prompt_path = os.path.join(prompt_dir, prompt_file)
         

@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from config import load_settings
+from config.config import load_settings
 
 WORKFLOW_PATHS = {
     "coder": "CODER.md",
@@ -15,7 +15,7 @@ class Workflow:
         self.workflow_path = WORKFLOW_PATHS[self.default_workflow]
     
     def get_workflow_file(self) -> str:
-        full_path = str(Path(__file__).parent / ".shitbot" / "workflows" / self.workflow_path)
+        full_path = str(Path(__file__).parent.parent / ".shitbot" / "workflows" / self.workflow_path)
         
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"工作流文件不存在: {full_path}")

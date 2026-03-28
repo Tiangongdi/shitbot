@@ -1,5 +1,5 @@
 from tavily import TavilyClient 
-from config import load_config
+from config.config import load_config
 
 
 

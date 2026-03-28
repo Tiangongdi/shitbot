@@ -3,11 +3,11 @@ import json
 from re import I
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass
-from config import AIConfig, load_config
+from config.config import AIConfig, load_config
 from litellm import completion
-from prompt import BotPromt  
+from src.prompt import BotPromt  
 from dataclasses import asdict
-from log import Log
+from src.log import Log
 
 
 @dataclass

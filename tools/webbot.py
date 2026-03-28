@@ -12,8 +12,8 @@ import asyncio
 import json
 from typing import Dict, Any, Optional, List
 from tools.playwiright import SmartWebExtractor, BrowserTools, ExtractedContent
-from ai import AIClient, Message
-from prompt import BotPromt
+from src.ai import AIClient, Message
+from src.prompt import BotPromt
 
 
 class WebBot:

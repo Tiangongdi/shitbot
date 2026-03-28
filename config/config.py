@@ -509,7 +509,7 @@ class SettingsConfig:
     created_at: str = ""
 
 
-SETTINGS_PATH = str(Path(__file__).parent / ".shitbot" / "datas" / "settings.json")
+SETTINGS_PATH = str(Path(__file__).parent.parent / ".shitbot" / "datas" / "settings.json")
 
 
 def load_settings(settings_path: Optional[str] = None) -> SettingsConfig:

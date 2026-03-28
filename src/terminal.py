@@ -8,10 +8,10 @@ from prompt_toolkit.styles import Style as PromptStyle
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
-from bot import Bot
-from config import load_config, setup_wizard
-from ui_components import TerminalUI
-from memory import SharedMemory, get_shared_memory
+from src.bot import Bot
+from config.config import load_config, setup_wizard
+from src.ui_components import TerminalUI
+from src.memory import SharedMemory, get_shared_memory
 
 class EscapeKeyListener:
     """Esc键监听器"""
@@ -71,11 +71,11 @@ def check_and_run_setup_wizard() -> bool:
     检查配置，如果需要则运行配置向导
     返回 True 表示可以继续运行，False 表示需要退出
     """
-    config_path = Path("config.yaml")
+    config_path = Path(__file__).parent.parent / "config" / "config.yaml"
     
     if not config_path.exists():
         print("\n[yellow]未找到配置文件，正在启动首次运行配置向导...[/yellow]\n")
-        setup_wizard("config.yaml")
+        setup_wizard(str(config_path))
         return True
     
     try:
@@ -116,8 +116,8 @@ class ShitBotTerminal:
         self.ui = TerminalUI(title)
         self.session = PromptSession()
         self.browser_manager = None
-        self.config = load_config()
-        self.config_path = Path("config.yaml")
+        self.config_path = Path(__file__).parent.parent / "config" / "config.yaml"
+        self.config = load_config(str(self.config_path))
         self.bot = Bot(shared_memory=get_shared_memory())
         self.bot.init_prompt()
         self.should_stop = False
@@ -314,23 +314,6 @@ class ShitBotTerminal:
         await self.bot.init_mcp()
         
         self.ui.show_welcome()
-        self.ui.show_help([
-            {"name": "/help", "description": "显示此帮助信息"},
-            {"name": "/skill", "description": "激活特定技能 (例: /skill coder)"},
-            {"name": "/role", "description": "采用特定角色 (例: /role assistant)"},
-            {"name": "/summary", "description": "总结当前对话上下文"},
-            {"name": "/file", "description": "列出并总结当前对话中引用的所有文件"},
-            {"name": "/init", "description": "执行初始化"},
-            {"name": "/clear", "description": "清除屏幕"},
-            {"name": "/new", "description": "开始新会话"},
-            {"name": "/token", "description": "查看 Token 使用统计"},
-            {"name": "/workflow", "description": "查看/切换工作流 (例: /workflow coder)"},
-            {"name": "/add", "description": "添加文件到禁止列表 (例: /add /path/to/file)"},
-            {"name": "/remove", "description": "从禁止列表删除文件 (例: /remove /path/to/file)"},
-            {"name": "/list", "description": "查看禁止文件列表"},  
-            {"name": "/exit", "description": "退出程序"},
-            {"name": "Esc", "description": "终止当前任务"}
-        ])
         
         while True:
             try:

@@ -16,7 +16,7 @@ class TokenTracker:
     def __init__(self, token_file_path: Optional[str] = None):
         if token_file_path is None:
             self.token_file_path = os.path.join(
-                os.path.dirname(__file__), 
+                os.path.dirname(os.path.dirname(__file__)), 
                 ".shitbot", "datas", "token.json"
             )
         else:

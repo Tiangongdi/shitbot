@@ -3,19 +3,19 @@ from re import S
 import time
 import asyncio
 from typing import Optional, List
-from ai import AIClient,Message
-from prompt import BotPromt  
-from config import load_config,load_settings
-from tool import Tool,get_tools_definition
-from memory import SharedMemory, get_shared_memory
-from workflows import Workflow
+from src.ai import AIClient,Message
+from src.prompt import BotPromt  
+from config.config import load_config,load_settings
+from src.tool import Tool,get_tools_definition
+from src.memory import SharedMemory, get_shared_memory
+from src.workflows import Workflow
 import platform
 import os
 from tools.doc import Doc 
-from log import Log
+from src.log import Log
 from rich.markdown import Markdown
-from ui_components import TerminalUI
-from token_tracker import TokenTracker
+from src.ui_components import TerminalUI
+from src.token_tracker import TokenTracker
 class Bot:
     """AI 智能体"""
     def __init__(self, shared_memory: Optional[SharedMemory] = None, if_user_or_timer: bool = True):

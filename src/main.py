@@ -6,9 +6,19 @@ ShitBot - AI 智能助手
 
 import asyncio
 import sys
+import io
 import os
 from pathlib import Path
-from terminal import ShitBotTerminal
+
+# 添加项目根目录到 Python 导入路径
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+# 修复 Windows 控制台中文编码问题
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+from src.terminal import ShitBotTerminal
 
 
 

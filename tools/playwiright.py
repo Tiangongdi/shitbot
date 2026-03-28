@@ -19,7 +19,7 @@ import hashlib
 
 from playwright.async_api import async_playwright, Page, Browser, BrowserContext
 from bs4 import BeautifulSoup, Comment
-from config import load_config
+from config.config import load_config
 
 config = load_config()
 if config.browser.playwright_browsers_path:

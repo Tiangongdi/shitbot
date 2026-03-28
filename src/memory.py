@@ -7,10 +7,10 @@ import os
 import platform
 import time
 from typing import List
-from ai import Message
+from src.ai import Message
 from tools.memory_bot import MemoryBot
-from prompt import BotPromt
-from config import load_config
+from src.prompt import BotPromt
+from config.config import load_config
 from tools.doc import Doc  
 
 

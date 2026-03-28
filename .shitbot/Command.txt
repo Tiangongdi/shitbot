@@ -11,3 +11,4 @@ This document describes the available commands for users. When user input starts
 
 /init - Perform initialization. Ask the user whether to proceed with persona initialization; if confirmed, read the init_self skill.
 
+@ [file name|web url] - This command allows you to view a specific folder or website as context

@@ -1,7 +1,7 @@
 
 from typing import List
-from ai import Message,AIClient
-from prompt import BotPromt
+from src.ai import Message,AIClient
+from src.prompt import BotPromt
 import json
 from datetime import datetime
 import os

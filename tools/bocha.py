@@ -10,7 +10,7 @@ import json
 import httpx
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
-from config import load_config 
+from config.config import load_config 
 
 @dataclass
 class SearchResult:

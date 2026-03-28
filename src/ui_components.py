@@ -13,35 +13,41 @@ from rich.spinner import Spinner
 
 class WelcomeScreen:
     """欢迎屏幕组件"""
-    
+
     def __init__(self, title: str = "ShitBot"):
         self.title = title
         self.console = Console()
-    
+
     def show(self):
         """显示欢迎界面"""
-        welcome_text = r"""
-╔════════════════════════════════════════════════════════════════╗
-║                                                              ║
-║             _____ _     _ _  ______       _                  ║
-║            /  ___| |   (_) | | ___ \     | |                 ║
-║            \ `--.| |__  _| |_| |_/ / ___ | |_                ║
-║             `--. \ '_ \| | __| ___ \/ _ \| __|               ║
-║            /\__/ / | | | | |_| |_/ / (_) | |_                ║
-║            \____/|_| |_|_|\__\____/ \___/ \__|               ║
-║                                                              ║
-║                                                              ║
-║                                                              ║
-║                                                              ║
-╚════════════════════════════════════════════════════════════════╝
+        # 使用纯 ASCII art，兼容所有编码
+        # S H I T B O T
+        ascii_art = r"""
+███████╗██╗  ██╗██╗████████╗██████╗  ██████╗ ████████╗
+██╔════╝██║  ██║██║╚══██╔══╝██╔══██╗██╔═══██╗╚══██╔══╝
+███████╗███████║██║   ██║   ██████╔╝██║   ██║   ██║   
+╚════██║██╔══██║██║   ██║   ██╔══██╗██║   ██║   ██║   
+███████║██║  ██║██║   ██║   ██████╔╝╚██████╔╝   ██║   
+╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝   ╚═════╝  ╚═════╝    ╚═╝   
+                                                      
 """
-        
-        self.console.print(Panel(
-            Text(welcome_text, justify="center"),
-            title=f"欢迎使用 {self.title}",
-            subtitle="输入 /help 查看命令帮助",
-            box=box.DOUBLE
-        ))
+        welcome_text = f"""[bold green]{ascii_art}[/bold green]
+
+[bold cyan]ShitBot - 你的 AI 编程助手[/bold cyan]
+
+[dim white] * 输入 [/dim white][yellow bold]/help[/yellow bold][dim white] 查看所有可用命令[/dim white]
+[dim white] * 输入 [/dim white][yellow bold]/workflow[/yellow bold][dim white] 切换工作模式[/dim white]
+[dim white] * 按 [/dim white][yellow bold]Esc[/yellow bold][dim white] 终止当前任务[/dim white]
+"""
+
+        # 使用 Panel 美化显示
+        panel = Panel(
+            welcome_text,
+            title="[b]Welcome[/b]",
+            border_style="green",
+            box=box.ROUNDED
+        )
+        self.console.print(panel)
 
 
 class HelpScreen:

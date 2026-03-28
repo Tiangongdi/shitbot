@@ -4,6 +4,10 @@
     "summarize": {
       "version": "1.0.0",
       "installedAt": 1774110542054
+    },
+    "ppt-generator": {
+      "version": "1.0.0",
+      "installedAt": 1774679867743
     }
   }
 }

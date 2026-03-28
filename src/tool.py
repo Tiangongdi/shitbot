@@ -17,8 +17,8 @@ from tools.skill import Skill
 from tools.tavily_api import TavilySearch
 from tools.email_reader import EmailReader
 from tools.mcp_client import MCPClient, MCPServerConfig
-from ai import Message
-from ui_components import TerminalUI
+from src.ai import Message
+from src.ui_components import TerminalUI
 class Tool:
     """工具基类"""
     def __init__(self, shared_memory: Dict[str, Any]):
@@ -114,7 +114,7 @@ class Tool:
         self.terminal_ui = terminal_ui
     def _load_config(self):
         """加载配置"""
-        from config import load_config
+        from config.config import load_config
         return load_config()
     async def execute(self, message,if_user: bool = True) :
         """执行技能，返回技能执行结果"""
