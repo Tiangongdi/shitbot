@@ -1,13 +1,8 @@
 """
-<<<<<<< HEAD
 浏览器操作工具
 功能：
 1. SmartWebExtractor - 智能网页内容提取器
 2. BrowserTools - 底层浏览器操作工具（导航、点击、表单）
-=======
-智能网页内容提取器
-功能：爬取网页并提取对AI/LLM分析有价值的结构化内容
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
 """
 
 import sys
@@ -22,7 +17,6 @@ from typing import List, Dict, Optional, Any
 from urllib.parse import urljoin, urlparse
 import hashlib
 
-<<<<<<< HEAD
 from playwright.async_api import async_playwright, Page, Browser, BrowserContext
 from bs4 import BeautifulSoup, Comment
 from config.config import load_config
@@ -32,16 +26,6 @@ if config.browser.playwright_browsers_path:
     os.environ['PLAYWRIGHT_BROWSERS_PATH'] = config.browser.playwright_browsers_path
 
 
-=======
-from playwright.async_api import async_playwright, Page
-from bs4 import BeautifulSoup, Comment
-from ai import AIClient,Message
-from prompt import BotPromt  
-from config import load_config
-config = load_config()
-if config.browser.playwright_browsers_path:
-    os.environ['PLAYWRIGHT_BROWSERS_PATH'] = config.browser.playwright_browsers_path
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
 @dataclass
 class ExtractedContent:
     url: str
@@ -93,17 +77,12 @@ class SmartWebExtractor:
                 viewport={"width": 1920, "height": 1080}
             )
             
-<<<<<<< HEAD
-=======
-            # 拦截静态资源以加速
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             await context.route("**/*.{png,jpg,jpeg,gif,svg,css,woff,woff2}", 
                               lambda route: route.abort())
             
             page = await context.new_page()
             
             try:
-<<<<<<< HEAD
                 await self._goto_page(page, url)
                 
                 if self.scroll_to_load:
@@ -112,20 +91,6 @@ class SmartWebExtractor:
                 html_content = await page.content()
                 page_title = await page.title()
                 
-=======
-                # 访问页面
-                await self._goto_page(page, url)
-                
-                # 滚动加载懒加载内容
-                if self.scroll_to_load:
-                    await self._scroll_page(page)
-                
-                # 获取完整 HTML
-                html_content = await page.content()
-                page_title = await page.title()
-                
-                # 解析内容
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
                 extracted = self._parse_html(
                     html=html_content,
                     url=url,
@@ -145,14 +110,8 @@ class SmartWebExtractor:
             else:
                 await page.goto(url, wait_until="domcontentloaded", timeout=self.timeout)
             
-<<<<<<< HEAD
             await page.wait_for_load_state("load")
             await asyncio.sleep(1)
-=======
-            # 等待关键元素
-            await page.wait_for_load_state("load")
-            await asyncio.sleep(1)  # 额外等待动态内容
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             
         except Exception as e:
             print(f"页面加载警告: {e}")
@@ -160,24 +119,12 @@ class SmartWebExtractor:
     async def _scroll_page(self, page: Page):
         """滚动页面加载懒加载内容"""
         try:
-<<<<<<< HEAD
             height = await page.evaluate("document.body.scrollHeight")
             steps = min(height // 1000, 10)
-=======
-            # 获取页面高度
-            height = await page.evaluate("document.body.scrollHeight")
-            
-            # 分步滚动
-            steps = min(height // 1000, 10)  # 最多10步
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             for i in range(steps):
                 await page.evaluate(f"window.scrollTo(0, {(i + 1) * 1000})")
                 await asyncio.sleep(0.3)
             
-<<<<<<< HEAD
-=======
-            # 回滚到顶部
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             await page.evaluate("window.scrollTo(0, 0)")
             await asyncio.sleep(0.5)
             
@@ -187,15 +134,7 @@ class SmartWebExtractor:
     def _parse_html(self, html: str, url: str, title: str) -> ExtractedContent:
         """解析HTML内容"""
         soup = BeautifulSoup(html, 'lxml')
-<<<<<<< HEAD
         self._clean_soup(soup)
-=======
-        
-        # 清理脚本和样式
-        self._clean_soup(soup)
-        
-        # 计算哈希
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         raw_hash = hashlib.md5(html.encode()).hexdigest()
         
         return ExtractedContent(
@@ -218,10 +157,6 @@ class SmartWebExtractor:
     
     def _clean_soup(self, soup: BeautifulSoup):
         """清理无关标签"""
-<<<<<<< HEAD
-=======
-        # 移除脚本、样式、注释
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for element in soup(["script", "style", "noscript", "iframe", "canvas", "svg"]):
             element.decompose()
         
@@ -235,24 +170,12 @@ class SmartWebExtractor:
         return meta.get("content", "") if meta else ""
     
     def _extract_main_text(self, soup: BeautifulSoup) -> str:
-<<<<<<< HEAD
         """智能提取正文内容"""
-=======
-        """
-        智能提取正文内容
-        优先查找 article/main 标签，否则基于文本密度算法
-        """
-        # 尝试语义化标签
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for selector in ["article", "main", '[role="main"]', ".content", "#content"]:
             element = soup.select_one(selector)
             if element:
                 return self._clean_text(element.get_text())
         
-<<<<<<< HEAD
-=======
-        # 文本密度算法找正文
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         paragraphs = soup.find_all("p")
         best_text = ""
         max_density = 0
@@ -275,7 +198,6 @@ class SmartWebExtractor:
         """提取 JSON-LD 等结构化数据"""
         structured = []
         
-<<<<<<< HEAD
         for script in soup.find_all("script", type="application/ld+json"):
             try:
                 data = json.loads(script.string)
@@ -285,22 +207,6 @@ class SmartWebExtractor:
         
         microdata_items = soup.find_all(attrs={"itemscope": True})
         for item in microdata_items[:5]:
-=======
-        # JSON-LD
-        for script in soup.find_all("script", type="application/ld+json"):
-            try:
-                data = json.loads(script.string)
-                structured.append({
-                    "type": "json-ld",
-                    "data": data
-                })
-            except:
-                pass
-        
-        # Microdata
-        microdata_items = soup.find_all(attrs={"itemscope": True})
-        for item in microdata_items[:5]:  # 限制数量
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             item_data = {"type": "microdata", "properties": {}}
             for prop in item.find_all(attrs={"itemprop": True}):
                 item_data["properties"][prop["itemprop"]] = prop.get_text(strip=True)
@@ -329,18 +235,10 @@ class SmartWebExtractor:
             href = a["href"]
             full_url = urljoin(base_url, href)
             
-<<<<<<< HEAD
-=======
-            # 去重
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             if full_url in seen:
                 continue
             seen.add(full_url)
             
-<<<<<<< HEAD
-=======
-            # 分类链接
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             link_type = self._classify_link(href)
             
             links.append({
@@ -351,11 +249,7 @@ class SmartWebExtractor:
                 "type": link_type
             })
         
-<<<<<<< HEAD
         return links[:50]
-=======
-        return links[:50]  # 限制数量
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
     
     def _classify_link(self, href: str) -> str:
         """分类链接类型"""
@@ -398,18 +292,10 @@ class SmartWebExtractor:
             rows = []
             headers = []
             
-<<<<<<< HEAD
-=======
-            # 提取表头
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             thead = table.find("thead")
             if thead:
                 headers = [th.get_text(strip=True) for th in thead.find_all(["th", "td"])]
             
-<<<<<<< HEAD
-=======
-            # 提取行数据
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             for tr in table.find_all("tr"):
                 row_data = [td.get_text(strip=True) for td in tr.find_all(["td", "th"])]
                 if row_data:
@@ -418,11 +304,7 @@ class SmartWebExtractor:
             tables.append({
                 "index": i,
                 "headers": headers,
-<<<<<<< HEAD
                 "rows": rows[:20],
-=======
-                "rows": rows[:20],  # 限制行数
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
                 "row_count": len(rows)
             })
         
@@ -438,17 +320,10 @@ class SmartWebExtractor:
                 for li in lst.find_all("li", recursive=False)
             ]
             
-<<<<<<< HEAD
             if items and len(items) > 1:
                 lists.append({
                     "type": lst.name,
                     "items": items[:15],
-=======
-            if items and len(items) > 1:  # 过滤空列表
-                lists.append({
-                    "type": lst.name,  # ul 或 ol
-                    "items": items[:15],  # 限制数量
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
                     "item_count": len(items)
                 })
         
@@ -458,10 +333,6 @@ class SmartWebExtractor:
         """提取交互元素（表单、按钮等）"""
         elements = []
         
-<<<<<<< HEAD
-=======
-        # 表单
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for form in soup.find_all("form"):
             inputs = []
             for inp in form.find_all(["input", "textarea", "select"]):
@@ -479,10 +350,6 @@ class SmartWebExtractor:
                 "inputs": inputs
             })
         
-<<<<<<< HEAD
-=======
-        # 按钮
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for btn in soup.find_all(["button", "a"], class_=re.compile(r"btn|button", re.I)):
             elements.append({
                 "tag": btn.name,
@@ -499,19 +366,11 @@ class SmartWebExtractor:
         for tag in ["article", "section", "aside", "nav", "header", "footer"]:
             elements = soup.find_all(tag)
             if elements:
-<<<<<<< HEAD
-=======
-                # 合并同类型标签的文本
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
                 combined_text = " ".join([
                     self._clean_text(el.get_text())[:500] 
                     for el in elements
                 ])
-<<<<<<< HEAD
                 semantic_tags[tag] = combined_text[:1000]
-=======
-                semantic_tags[tag] = combined_text[:1000]  # 限制长度
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         
         return semantic_tags
     
@@ -519,22 +378,12 @@ class SmartWebExtractor:
         """提取代码块"""
         code_blocks = []
         
-<<<<<<< HEAD
-=======
-        # pre > code 结构
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for pre in soup.find_all("pre"):
             code = pre.find("code")
             text = code.get_text() if code else pre.get_text()
             if len(text.strip()) > 20:
-<<<<<<< HEAD
                 code_blocks.append(text[:2000])
         
-=======
-                code_blocks.append(text[:2000])  # 限制长度
-        
-        # 单独 code 标签
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         for code in soup.find_all("code"):
             text = code.get_text()
             if len(text.strip()) > 30 and text not in code_blocks:
@@ -546,7 +395,6 @@ class SmartWebExtractor:
         """清理文本"""
         if not text:
             return ""
-<<<<<<< HEAD
         text = re.sub(r'\s+', ' ', text)
         text = text.replace('\n', ' ').replace('\t', ' ')
         return text.strip()
@@ -903,57 +751,3 @@ async def get_web_data(url: str):
 
 if __name__ == "__main__":
     asyncio.run(get_web_data("https://bigmodel.cn/pricing"))
-=======
-        # 移除多余空白
-        text = re.sub(r'\s+', ' ', text)
-        # 移除特殊字符
-        text = text.replace('\n', ' ').replace('\t', ' ')
-        return text.strip()
-
-class WebBot:
-    def __init__(self):
-        self.extractor = SmartWebExtractor(
-            headless=True,
-            wait_for_network_idle=False,
-            scroll_to_load=True
-        )
-        self.prompt = BotPromt()
-        self.ai = AIClient()
-    async def extract(self, url: str, question: str):
-        """提取网页内容"""
-        try:
-            result =  await self.extractor.extract(url)
-            prompt=self.prompt.get_prompt("WebAgent.txt")
-            # 调用MiniMax模型
-            messages = [
-                Message(role="system", content=prompt), 
-                Message(role="user", content=question),
-                Message(role="user", content=result.to_json())
-            ]
-            response = self.ai.chat(messages)  
-            return response.content
-        except Exception as e:
-            return f"提取网页内容时出错: {str(e)}"
-# ==================== 使用示例 ====================
-
-async def get_web_data(url: str):
-    """使用示例"""
-    bot = WebBot()
-    question = "这个视频的内容大概是什么"
-    response = await bot.extract(url, question)
-    print(response)
-    response = await bot.extract(url, question)
-    print(response)
-
-
-if __name__ == "__main__":
-    # 运行示例
-    asyncio.run(get_web_data("https://bigmodel.cn/pricing"))
-    
-    # 或者单URL提取
-    # async def single_extract():
-    #     extractor = SmartWebExtractor()
-    #     result = await extractor.extract("https://example.com")
-    #     print(result.to_json())
-    # asyncio.run(single_extract())
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7

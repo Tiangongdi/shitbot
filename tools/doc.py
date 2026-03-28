@@ -1,11 +1,7 @@
 import os
 class Doc:
     def __init__(self) -> None:
-<<<<<<< HEAD
         self.file_path = os.path.join(os.path.dirname(__file__), "..",".shitbot", "docs")  # 文件夹地址
-=======
-        self.file_path = os.path.join(os.path.dirname(__file__), "..", "Docs")  # 文件夹地址
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         self.file_list = os.listdir(self.file_path)  # 文件列表
         self.file_dict = {}  # 文件字典 # 文件字典 
         self.value = {} # 一级标题字典

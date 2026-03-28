@@ -2,11 +2,7 @@ import os
 import yaml
 class Skill:
     def __init__(self) -> None:
-<<<<<<< HEAD
         self.file_path = os.path.join(os.path.dirname(__file__), "..",".shitbot", "skills")
-=======
-        self.file_path = os.path.join(os.path.dirname(__file__), "..", "Skills")
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
         if not os.path.exists(self.file_path):
             os.makedirs(self.file_path)
         self.skill_list = [entry.name for entry in os.scandir(self.file_path) if entry.is_dir()] # 技能文件列表
