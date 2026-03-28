@@ -101,12 +101,12 @@ class Bot:
         mcp_tools = self.tools.get_mcp_tools_definition()
         if mcp_tools:
             # 合并内置工具和 MCP 工具
-            from tool import get_tools_definition
+            from src.tool import get_tools_definition
             self.ai.tools = get_tools_definition() + mcp_tools
             if self.terminal_ui:
                 self.terminal_ui.system(f"[MCP] 已加载 {len(mcp_tools)} 个 MCP 工具")
         else:
-            from tool import get_tools_definition
+            from src.tool import get_tools_definition
             self.ai.tools = get_tools_definition()
     def init_system_prompt(self):
         """初始化系统提示"""
@@ -170,7 +170,7 @@ class Bot:
         self.token_tracker.add_usage(usage)
         
         if message.content and ui:
-            ui.console.print("[white bold]·[/white bold] ", end="")
+            ui.console.print("[white bold]●[/white bold] ", end="")
             ui.console.print(Markdown(message.content))
         
         assistant_msg = Message(
@@ -220,7 +220,7 @@ class Bot:
                 self.token_tracker.add_usage(usage)
                 
                 if message.content and ui:
-                    ui.console.print("[white bold]·[/white bold] ", end="")
+                    ui.console.print("[white bold]●[/white bold] ", end="")
                     ui.console.print(Markdown(message.content))
                 
                 assistant_msg = Message(
@@ -370,8 +370,8 @@ async def test_shared_memory():
     print(f"  Bot3: {response3}")
     
     print("\nBot4 对话（应该知道编程偏好）:")
-    response4 = await bot4.chat("我喜欢什么？")
-    print(f"  用户: 我喜欢什么？")
+    response4 = await bot4.chat("你好，我喜欢什么？")
+    print(f"  用户: 你好，我喜欢什么？")
     print(f"  Bot4: {response4}")
     
     print(f"\n当前消息数量: {bot3.get_message_count()}")

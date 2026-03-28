@@ -4,8 +4,8 @@
 
 **💩 一个功能强大的 AI 智能助手终端应用 💩**
 
-[!\[Python\](https://img.shields.io/badge/Python-3.8+-blue.svg null)](https://python.org)
-[!\[License\](https://img.shields.io/badge/License-MIT-green.svg null)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
 
@@ -17,6 +17,7 @@
 - [核心特性](#核心特性)
 - [环境要求](#环境要求)
 - [快速开始](#快速开始)
+- [命令行使用](#命令行使用)
 - [配置说明](#配置说明)
 - [工具模块](#工具模块)
 - [技能系统](#技能系统)
@@ -43,10 +44,11 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持 15+ 种主
 - 💾 智能记忆管理
 - 📚 内置文档系统
 - 🔧 可扩展的技能系统（Skills）
-- 🎭 灵活的角色系统（Roles）
+- 🎭 灵活的角色系统
 - 🐍 Python 代码执行能力
 - 🛡️ 完善的安全防护机制
 - 🎨 现代化终端界面
+- ⌨️ 支持命令行界面（CLI），可安装后全局使用
 
 ***
 
@@ -103,7 +105,7 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持 15+ 种主
 ### ⏰ 定时任务系统
 
 - 一次性延迟执行
-- 周期性任务执行
+- 周期性执行
 - 每日定时执行
 - 任务管理（暂停、恢复、取消）
 
@@ -172,8 +174,8 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持 15+ 种主
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourusername/ShitBot.git
-cd ShitBot
+git clone https://github.com/Tiangongdi/shitbot.git
+cd shitbot
 ```
 
 ### 2. 创建虚拟环境
@@ -192,44 +194,160 @@ python -m venv shitbot_env
 source shitbot_env/bin/activate
 ```
 
-### 4. 安装依赖
+### 4. 安装依赖和 CLI 工具
 
 ```bash
 pip install -r requirements.txt
+# 安装 CLI 命令（可全局调用 shitbot 命令）
+pip install -e .
 ```
 
 ### 5. 初始化配置
 
+你可以选择手动配置或者使用配置向导：
+
+**方式一：使用配置向导（推荐）**
+
+```bash
+shitbot config
+```
+
+执行后会提示选择 AI 平台、输入 API 密钥、智能体信息等，自动生成配置文件。
+
+**方式二：手动复制配置模板**
+
 ```bash
 # 复制配置模板
+cp .env.example .env
+# 如果你使用 config.yaml 格式：
 cp config.example.yaml config.yaml
 # 复制智能体信息模板
 cp .shitbot/Self.example.txt .shitbot/Self.txt
 ```
 
-编辑 `config.yaml` 填入你的 API 密钥和邮箱配置，编辑 `.shitbot/Self.txt` 设置智能体名称和性格。
-
-或者运行初始化向导自动配置：
-
-```bash
-python init_project.py
-```
-
-执行后会提示选择 AI 平台、输入 API 密钥、智能体信息等，自动生成配置文件。
+然后编辑配置文件填入你的 API 密钥和其他配置。
 
 ### 6. 启动程序
 
+**方式一：使用 CLI 命令（推荐）**
+
 ```bash
-python main.py
+shitbot shitbot
+```
+
+**方式二：直接运行 Python 脚本**
+
+```bash
+python src/main.py
 ```
 
 ***
 
+## ⌨️ 命令行使用
+
+ShitBot 提供了完整的命令行界面（CLI），安装后可以全局使用 `shitbot` 命令。
+
+### 可用命令
+
+| 命令 | 说明 |
+|------|------|
+| `shitbot shitbot` | 启动交互式对话（默认方式） |
+| `shitbot shitbot -m "你的问题"` | 执行单次对话，直接输出结果 |
+| `shitbot config` | 运行配置向导，初始化配置 |
+
+### 命令详解
+
+#### 1. 启动交互式对话
+
+```bash
+shitbot shitbot
+```
+
+进入交互式对话模式，你可以持续和 ShitBot 对话，就像在 Claude Code 中一样。
+
+#### 2. 单次对话模式
+
+```bash
+shitbot shitbot -m "帮我计算 1+1 等于多少"
+shitbot shitbot -m "搜索一下今天的 AI 新闻"
+shitbot shitbot -m "读取当前目录下的 README.md 文件并总结内容"
+```
+
+适合用于脚本调用或者快速查询，执行完直接输出结果然后退出。
+
+#### 3. 配置向导
+
+```bash
+shitbot config
+```
+
+交互式配置向导，引导你完成 AI 平台选择、API 密钥输入、智能体信息设置等，自动生成配置文件。
+
+### 使用示例
+
+```bash
+# 启动交互式聊天
+shitbot shitbot
+
+# 单次提问
+shitbot shitbot -m "当前目录有哪些文件？"
+
+# 重新运行配置向导
+shitbot config
+```
+
+***
 ## ⚙️ 配置说明
 
-### 完整配置文件结构
+### 配置方式
 
-参考 `config.example.yaml` 文件，主要配置项如下：
+ShitBot 支持两种配置方式：
+
+**1. 环境变量方式（推荐，通过 `shitbot config` 生成）**
+- 使用 `.env` 文件存储配置
+- 更符合现代开发习惯，方便容器部署
+
+**2. YAML 配置文件方式**
+- 使用 `config.yaml` 存储配置
+- 兼容旧版本配置格式
+
+### 完整配置项
+
+主要配置项如下：
+
+```env
+# AI 提供商配置
+AI_API_KEY=your-api-key-here
+AI_VALUE=deepseek
+AI_MODEL=deepseek-chat
+AI_BASE_URL=
+
+# 博查搜索配置
+BOCHA_API_KEY=
+BOCHA_BASE_URL=
+
+# Tavily 搜索配置
+TAVILY_KEY=
+
+# 网页搜索配置
+WEB_SEARCH_ID=2
+
+# 邮件发送配置（SMTP）
+EMAIL_FROM=your-email@example.com
+EMAIL_PASSWORD=your-email-password
+EMAIL_SMTP_SERVER=smtp.example.com
+EMAIL_SMTP_PORT=465
+EMAIL_USE_TLS=true
+
+# 邮件读取配置（IMAP）
+IMAP_EMAIL=your-email@example.com
+IMAP_PASSWORD=your-email-password
+IMAP_SERVER=imap.example.com
+IMAP_PORT=993
+IMAP_USE_SSL=true
+```
+
+或者 YAML 格式：
 
 ```yaml
 # AI 提供商配置（支持 15+ 种平台，详见 models.json）
@@ -314,7 +432,6 @@ stop:
 > 💡 更多平台的详细配置（`base_url`、模型名称等）请参考 `.shitbot/docs/AI_API_Platforms_OpenAI_SDK_Compatible` 文档。
 
 ***
-
 ## 🛠️ 工具模块
 
 ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档：
@@ -411,7 +528,8 @@ ShitBot 支持模块化的技能扩展系统，每个技能都是独立的功能
 | **skill-creator** | 技能创建工具 — 设计、构建和打包自定义技能          |
 | **role-skill**    | 角色创建工具 — 定义角色的行为、技能和工具推荐        |
 | **clawhub**       | 技能商店 — 从 ClawHub 公共技能库搜索和安装社区技能 |
-| **init\_self**    | 智能体初始化 — 配置智能体初始状态和基础参数         |
+| **init_self**     | 智能体初始化 — 配置智能体初始状态和基础参数         |
+| **project-update**| 项目更新工具 — 规范项目代码更新流程               |
 
 ### 🎯 技能特点
 
@@ -541,11 +659,14 @@ AI: [使用 skill-creator 技能] 请告诉我技能的名称和用途...
 ```
 ShitBot/
 ├── .gitignore                         # Git 隔离规则
+├── .env.example                       # 环境变量配置模板
 ├── config.example.yaml                # 配置文件模板（复制为 config.yaml 使用）
 ├── models.json                        # 支持的 AI 平台列表
+├── pyproject.toml                     # 项目配置（含 CLI 入口定义）
 ├── requirements.txt                   # 依赖列表
 ├── README_CN.md                       # 中文说明文档
 ├── README_EN.md                       # 英文说明文档
+├── shitbot.bat                        # Windows 快速启动脚本
 │
 ├── .shitbot/                          # ShitBot 核心数据目录
 │   ├── Self.example.txt               # 智能体信息模板（复制为 Self.txt 使用）
@@ -564,7 +685,8 @@ ShitBot/
 │   │   ├── skill-creator/             # [内置] 技能创建工具
 │   │   ├── role-skill/                # [内置] 角色创建工具
 │   │   ├── clawhub/                   # [内置] ClawHub 技能商店
-│   │   └── init_self/                 # [内置] 智能体初始化
+│   │   ├── init_self/                 # [内置] 智能体初始化
+│   │   └── project-update/            # [内置] 项目更新工具
 │   ├── roles/                         # 角色目录
 │   │   └── Coder/                     # [内置] 代码编写角色
 │   ├── workfile/                      # 工作文件目录（占位文件，运行时自动填充）
@@ -593,19 +715,26 @@ ShitBot/
 │   ├── timer.py                       # 定时任务
 │   └── venv_manager.py                # 虚拟环境管理
 │
-├── ai.py                              # AI 客户端
-├── bot.py                             # 机器人核心逻辑
-├── config.py                          # 配置管理
-├── main.py                            # 主程序入口
-├── memory.py                          # 记忆管理
-├── prompt.py                          # 提示词管理
-├── terminal.py                        # 终端界面
-├── tool.py                            # 工具定义和执行
-├── ui_components.py                   # UI 组件
-├── log.py                             # 日志管理
-├── token_tracker.py                   # Token 追踪
-├── workflows.py                       # 工作流管理
-└── init_project.py                    # 项目初始化脚本
+├── config/                            # 配置模块
+│   ├── __init__.py                    # 配置初始化
+│   └── config.py                      # 配置加载
+│
+├── src/                               # 源代码目录
+│   ├── ai.py                          # AI 客户端
+│   ├── bot.py                         # 机器人核心逻辑
+│   ├── cli.py                         # 命令行界面（CLI）
+│   ├── main.py                        # 主程序入口
+│   ├── memory.py                      # 记忆管理
+│   ├── prompt.py                      # 提示词管理
+│   ├── terminal.py                    # 终端界面
+│   ├── tool.py                        # 工具定义和执行
+│   ├── ui_components.py               # UI 组件
+│   ├── log.py                         # 日志管理
+│   ├── token_tracker.py               # Token 追踪
+│   └── workflows.py                   # 工作流管理
+│
+├── init_project.py                    # 项目初始化脚本
+└── skills-lock.json                    # 技能锁定文件
 ```
 
 ***
@@ -617,11 +746,13 @@ ShitBot/
 ```bash
 # 确保已安装依赖
 pip install -r requirements.txt
+# 确保已安装 CLI
+pip install -e .
 # 确保已创建配置文件
-cp config.example.yaml config.yaml
-# 编辑 config.yaml 填入 API 密钥
-# 运行初始化脚本
-python init_project.py
+cp .env.example .env
+# 编辑 .env 填入 API 密钥
+# 运行配置向导
+shitbot config
 ```
 
 ### 2. API 调用失败

@@ -43,7 +43,6 @@ class WelcomeScreen:
         # 使用 Panel 美化显示
         panel = Panel(
             welcome_text,
-            title="[b]Welcome[/b]",
             border_style="green",
             box=box.ROUNDED
         )
@@ -130,7 +129,7 @@ class MessagePanel:
         """保存并显示AI回复"""
         self.stop_thinking()
         # 先打印加粗的·和空格，然后打印markdown，使用同一个console实例
-        self.console.print("[white bold]·[/white bold] ", end="")
+        self.console.print("[white]●[/white] ", end="")
         self.console.print(Markdown(message))
 
 

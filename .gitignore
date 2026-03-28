@@ -63,25 +63,17 @@ config.yaml
 # ShitBot 用户安装的技能（仅保留内置技能）
 # ========================
 # 内置技能（保留上传）:
-#   skill-creator, role-skill, clawhub, init_self
-# 其余技能为用户自行安装，不上传
-.shitbot/skills/bilibili-update-viewer/
+#   clawhub, init_self, project-update, role-skill, skill-creator
+# 其余技能为用户自行安装/添加，不上传
 .shitbot/skills/docx/
-.shitbot/skills/find-skills/
 .shitbot/skills/find_skill/
 .shitbot/skills/github-uploader/
-.shitbot/skills/idea-expander/
-.shitbot/skills/market-research/
+.shitbot/skills/humanizer/
 .shitbot/skills/ppt-generator/
-.shitbot/skills/proj-pilot/
-.shitbot/skills/project-update/
-.shitbot/skills/self-improvement/
 .shitbot/skills/self-improving-agent/
-.shitbot/skills/skill-vetter/
 .shitbot/skills/skill-vetter-1.0.0/
-.shitbot/skills/tech-selection-report/
+.shitbot/skills/summarize/
 .shitbot/skills/ui-ux-pro-max/
-.shitbot/skills/user-profile-generator/
 
 # ========================
 # ShitBot 用户创建的角色（仅保留内置角色）
@@ -128,4 +120,3 @@ tmp/
 .shitbot/MemoryBot.txt
 .shitbot/Sys.txt
 .shitbot/WebAgent.txt
-.shitbot/skills/summarize/
