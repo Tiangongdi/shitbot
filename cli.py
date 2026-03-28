@@ -14,28 +14,34 @@ if sys.platform == 'win32':
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 import src.main as main
-from config.config import setup_wizard, load_config
+from config.config import setup_wizard
 from src.terminal import check_and_run_setup_wizard
 from src.bot import Bot
 from src.memory import get_shared_memory
 
-# 创建命令
-@click.command()
-def default():
-    """
-    主命令，用于启动 ShitBot
-    """
-    try:
-        asyncio.run(main.main())
-    except KeyboardInterrupt:
-        print("\n程序已退出")
 
-@click.command()
+@click.group(invoke_without_command=True)
+def cli(ctx):
+    """
+    ShitBot - 一个功能强大的 AI 智能助手终端应用
+    
+    不带子命令运行时默认启动交互式对话
+    """
+    if ctx.invoked_subcommand is None:
+        # 如果没有子命令，默认启动主程序
+        try:
+            asyncio.run(main.main())
+        except KeyboardInterrupt:
+            print("\n程序已退出")
+
+
+@cli.command()
 def config():
     """
-    配置命令，用于配置 ShitBot
+    配置命令，运行配置向导
     """
     setup_wizard()
+
 
 def run_chat():
     """
@@ -75,21 +81,22 @@ def run_chat():
     except Exception as e:
         print(f"发生错误: {e}")
 
-@click.command('chat')
+
+@cli.command('chat')
 def chat():
     """
     单次对话模式，用于快速进行一次对话
     """
     run_chat()
 
-@click.command('-m')
+
+@cli.command('-m')
 def m():
     """
-    单次对话模式，用于快速进行一次对话
+    单次对话模式（简写），用于快速进行一次对话
     """
     run_chat()
 
-# 创建命令集合
-cli = click.CommandCollection(sources=[default, config, chat, m], invoke_without_command=True)
 
-
+if __name__ == '__main__':
+    cli()
