@@ -30,7 +30,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TIMER_JSON_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", "timer.json")
 
-
 class TaskStatus(Enum):
     """任务状态枚举"""
     PENDING = "pending"         # 等待执行
@@ -285,7 +284,7 @@ class Timer:
             return
         
         try:
-            from bot import Bot
+            from src.bot import Bot
             bot = Bot(if_user_or_timer=False)
             bot.init_prompt()
             self._executor.set_bot(bot)
@@ -379,6 +378,7 @@ class Timer:
         
         # 保存任务
         self._save_tasks()
+
     
     def _monitor_loop(self):
         """
