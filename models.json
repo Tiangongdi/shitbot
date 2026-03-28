@@ -1,0 +1,19 @@
+{
+  "domestic_common_models": [
+    {"name": "MOONSHOT(Kimi) - 月之暗面", "value": "moonshot"},
+    {"name": "DEEPSEEK - 深度求索", "value": "deepseek"},
+    {"name": "MINIMAX", "value": "minimax"},
+    {"name": "XIAOMI_MIMO - 小米", "value": "xiaomi_mimo"},
+    {"name": "VOLCENGINE - 火山引擎", "value": "volcengine"},
+    {"name": "DASHSCOPE - 阿里云", "value": "dashscope"},
+    {"name": "ZHIPU(ZAI) - 智谱AI", "value": "zai"},
+    {"name": "OPENAI - ChatGPT", "value": "openai"},
+    {"name": "ANTHROPIC - Claude", "value": "anthropic"},
+    {"name": "GEMINI - Google", "value": "gemini"},
+    {"name": "COHERE", "value": "cohere"},
+    {"name": "MISTRAL", "value": "mistral"},
+    {"name": "GROQ", "value": "groq"},
+    {"name": "PERPLEXITY", "value": "perplexity"},
+    {"name": "OPENROUTER", "value": "openrouter"}
+  ]
+}

@@ -53,8 +53,15 @@ class VenvManager:
         """
         try:
             if self.check_venv_exists():
+<<<<<<< HEAD
                 return True
             
+=======
+                print(f"虚拟环境 {self.venv_name} 已存在，无需创建")
+                return True
+            
+            print(f"正在创建虚拟环境 {self.venv_name}...")
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             
             if python_path:
                 cmd = [python_path, "-m", "venv", self.venv_path]
@@ -64,6 +71,7 @@ class VenvManager:
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
             
             if result.returncode == 0:
+<<<<<<< HEAD
                 return True
             else:
                
@@ -73,6 +81,20 @@ class VenvManager:
             
             return False
         except Exception as e:
+=======
+                print(f"✓ 虚拟环境 {self.venv_name} 创建成功")
+                print(f"  路径: {self.venv_path}")
+                return True
+            else:
+                print(f"✗ 虚拟环境创建失败: {result.stderr}")
+                return False
+                
+        except subprocess.CalledProcessError as e:
+            print(f"✗ 创建虚拟环境时出错: {e.stderr}")
+            return False
+        except Exception as e:
+            print(f"✗ 创建虚拟环境时发生错误: {str(e)}")
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             return False
     
     def get_python_path(self) -> Optional[str]:
@@ -114,9 +136,13 @@ class VenvManager:
                 [pip_path, "list"],
                 capture_output=True,
                 text=True,
+<<<<<<< HEAD
                 check=True,
                 encoding='utf-8',
                 errors='replace'
+=======
+                check=True
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             )
             return result.stdout
         except subprocess.CalledProcessError as e:
@@ -179,9 +205,13 @@ class VenvManager:
             result = subprocess.run(
                 [python_path, "-c", script],
                 capture_output=True,
+<<<<<<< HEAD
                 text=True,
                 encoding='utf-8',
                 errors='replace'
+=======
+                text=True
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             )
             return (result.returncode, result.stdout, result.stderr)
         except Exception as e:
@@ -197,6 +227,12 @@ class VenvManager:
             bool: 成功返回 True，失败返回 False
         """
         if self.check_venv_exists():
+<<<<<<< HEAD
+=======
+            print(f"✓ 虚拟环境 {self.venv_name} 已存在")
+            print(f"  路径: {self.venv_path}")
+            print(f"  Python: {self.get_python_path()}")
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
             return True
         else:
             return self.create_venv()

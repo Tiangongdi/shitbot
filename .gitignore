@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 # ========================
 # Python
 # ========================
+=======
+# Python
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+<<<<<<< HEAD
 *.egg-info/
 *.egg
 dist/
@@ -23,12 +28,40 @@ env/
 # ========================
 # IDE / 编辑器
 # ========================
+=======
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+shitbot_env/
+code_venv/
+venv/
+ENV/
+env/
+
+# IDE
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
+<<<<<<< HEAD
 # ========================
 # 系统文件
 # ========================
@@ -120,3 +153,29 @@ tmp/
 .shitbot/MemoryBot.txt
 .shitbot/Sys.txt
 .shitbot/WebAgent.txt
+=======
+# Logs
+Logs/
+*.log
+
+# Memory
+memory/
+memory.json
+
+# Timer
+timer.json
+
+# Config with sensitive data
+config.yaml
+
+# Keep example config
+!config.yaml.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+>>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
