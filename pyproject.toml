@@ -162,4 +162,4 @@ exclude = ["tests*", "*.egg-info", "build", "dist"]
 "*" = ["*.txt", "*.md", "*.yaml", "*.json", "*.png"]
 
 [project.scripts]
-shitbot = "src.cli:cli_group"
+shitbot = "src.cli:cli"

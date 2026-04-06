@@ -8,7 +8,7 @@ from prompt_toolkit.styles import Style as PromptStyle
 from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
-from src.bot import Bot
+from src.agent.bot import Bot
 from config.config import load_config, setup_wizard
 from src.ui_components import TerminalUI
 from src.memory import SharedMemory, get_shared_memory
@@ -112,6 +112,15 @@ def check_and_run_setup_wizard() -> bool:
 
 
 class ShitBotTerminal:
+    # 命令字典：命令 -> 描述
+    COMMANDS = {
+        "/skill": "激活特定技能",
+        "/role": "采用特定角色",
+        "/summary": "总结当前对话上下文",
+        "/file": "列出并总结当前对话中引用的所有文件",
+        "/init": "执行角色初始化"
+    }
+
     def __init__(self, title: str = "ShitBot"):
         self.ui = TerminalUI(title)
         self.session = PromptSession()
@@ -306,7 +315,28 @@ class ShitBotTerminal:
                 },
                 'default_provider': self.config.default_provider
             }, f, default_flow_style=False, allow_unicode=True)
-    
+    def prompt_command(self, user_input: str):
+        """提示用户输入命令"""
+        command = user_input.strip() # 移除首尾空格        
+        
+        if command.startswith('/'):
+            parts = command.split()
+            cmd = parts[0].lower()
+            args = " ".join(parts[1:]) if len(parts) > 1 else ""  
+            if not cmd in self.COMMANDS:
+                return user_input
+            prompt = f"({self.COMMANDS[cmd]})" 
+            if args:
+                prompt += f" {command}"                
+            return prompt
+        elif command.startswith('@'):
+            # 获取@后面的内容（去掉@符号）
+            u = f"(查看后面@之后的内容作为当前任务的上下文) {command}"
+            return u   
+        else:
+            return user_input
+        return user_input
+            
     async def run(self):
         check_and_run_setup_wizard()
         
@@ -339,6 +369,7 @@ class ShitBotTerminal:
                     escape_listener.start()
                     
                     try:
+                        user_input = self.prompt_command(user_input)
                         res = await self.bot.chat(user_input, ui=self.ui)
                     except Exception as e:
                         self.ui.stop_thinking()

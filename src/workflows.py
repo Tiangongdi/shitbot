@@ -14,7 +14,9 @@ class Workflow:
         self.default_workflow = self.settings.default_workflow
         self.workflow_path = WORKFLOW_PATHS[self.default_workflow]
     
-    def get_workflow_file(self) -> str:
+    def get_workflow_file(self,if_bot:bool)  -> str:
+        if not if_bot:
+            self.workflow_path = WORKFLOW_PATHS["sole"]
         full_path = str(Path(__file__).parent.parent / ".shitbot" / "workflows" / self.workflow_path)
         
         if not os.path.exists(full_path):

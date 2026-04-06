@@ -1,13 +1,9 @@
 # ShitBot 💩
 
-<div align="center">
-
 **💩 一个功能强大的 AI 智能助手终端应用 💩**
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
-</div>
+[!\[Python\](https://img.shields.io/badge/Python-3.8+-blue.svg null)](https://python.org)
+[!\[License\](https://img.shields.io/badge/License-MIT-green.svg null)](LICENSE)
 
 ***
 
@@ -49,6 +45,7 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持 15+ 种主
 - 🛡️ 完善的安全防护机制
 - 🎨 现代化终端界面
 - ⌨️ 支持命令行界面（CLI），可安装后全局使用
+- 🔌 MCP 协议支持（Model Context Protocol）
 
 ***
 
@@ -139,7 +136,7 @@ ShitBot 是一个功能强大的 AI 智能助手终端应用，支持 15+ 种主
 
 - 自定义角色设置
 - 角色之间的灵活切换
-- 内置代码编写角色
+- 内置多个专业领域角色
 - 角色特定行为和工具推荐
 
 ### 🛡️ 安全机制
@@ -249,11 +246,11 @@ ShitBot 提供了完整的命令行界面（CLI），安装后可以全局使用
 
 ### 可用命令
 
-| 命令 | 说明 |
-|------|------|
-| `shitbot shitbot` | 启动交互式对话（默认方式） |
+| 命令                          | 说明            |
+| --------------------------- | ------------- |
+| `shitbot shitbot`           | 启动交互式对话（默认方式） |
 | `shitbot shitbot -m "你的问题"` | 执行单次对话，直接输出结果 |
-| `shitbot config` | 运行配置向导，初始化配置 |
+| `shitbot config`            | 运行配置向导，初始化配置  |
 
 ### 命令详解
 
@@ -297,17 +294,20 @@ shitbot config
 ```
 
 ***
+
 ## ⚙️ 配置说明
 
 ### 配置方式
 
 ShitBot 支持两种配置方式：
 
-**1. 环境变量方式（推荐，通过 `shitbot config` 生成）**
+**1. 环境变量方式（推荐，通过** **`shitbot config`** **生成）**
+
 - 使用 `.env` 文件存储配置
 - 更符合现代开发习惯，方便容器部署
 
 **2. YAML 配置文件方式**
+
 - 使用 `config.yaml` 存储配置
 - 兼容旧版本配置格式
 
@@ -420,7 +420,7 @@ stop:
 | DeepSeek           | [platform.deepseek.com](https://platform.deepseek.com/)   | 注册后获取 API Key |
 | Moonshot (Kimi)    | [platform.moonshot.cn](https://platform.moonshot.cn/)     | 注册后申请 API 密钥  |
 | MiniMax            | [platform.minimaxi.com](https://platform.minimaxi.com/)   | 注册后获取 API Key |
-| 小米 (MiMo)          | [platform.mimaxi.com](https://platform.mimaxi.com/)       | 注册后获取 API Key |
+| 小米 (MiMo)          | [platform.mimaji.com](https://platform.mimaji.com/)       | 注册后获取 API Key |
 | 火山引擎               | [console.volcengine.com](https://console.volcengine.com/) | 注册后申请 API 密钥  |
 | 阿里云 (DashScope)    | [dashscope.aliyun.com](https://dashscope.aliyun.com/)     | 注册后申请 API 密钥  |
 | OpenAI             | [platform.openai.com](https://platform.openai.com/)       | 注册后获取 API Key |
@@ -432,6 +432,7 @@ stop:
 > 💡 更多平台的详细配置（`base_url`、模型名称等）请参考 `.shitbot/docs/AI_API_Platforms_OpenAI_SDK_Compatible` 文档。
 
 ***
+
 ## 🛠️ 工具模块
 
 ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档：
@@ -496,10 +497,9 @@ ShitBot 提供了丰富的工具模块，每个模块都有详细的使用文档
 
 #### 💾 记忆管理模块
 
-| 工具            | 说明       |
-| ------------- | -------- |
-| `save_memory` | 保存当前对话记忆 |
-| `get_memory`  | 获取历史记忆   |
+| 工具           | 说明     |
+| ------------ | ------ |
+| `get_memory` | 获取历史记忆 |
 
 #### 📚 文档管理模块
 
@@ -523,15 +523,15 @@ ShitBot 支持模块化的技能扩展系统，每个技能都是独立的功能
 
 ### 📦 内置技能
 
-| 技能名称              | 说明                              |
-| ----------------- | ------------------------------- |
-| **skill-creator** | 技能创建工具 — 设计、构建和打包自定义技能          |
-| **role-skill**    | 角色创建工具 — 定义角色的行为、技能和工具推荐        |
-| **clawhub**       | 技能商店 — 从 ClawHub 公共技能库搜索和安装社区技能 |
-| **init_self**     | 智能体初始化 — 配置智能体初始状态和基础参数         |
-| **project-update**| 项目更新工具 — 规范项目代码更新流程               |
+\| 技能名称              | 说明                              |
 
-### 🎯 技能特点
+| 技能名称               | 说明                              |
+| ------------------ | ------------------------------- |
+| **clawhub**        | 技能商店 — 从 ClawHub 公共技能库搜索和安装社区技能 |
+| **init\_self**     | 智能体初始化 — 配置智能体初始状态和基础参数         |
+| **project-update** | 项目更新工具 — 规范项目代码更新流程             |
+| **role-skill**     | 角色创建工具 — 定义角色的行为、技能和工具推荐        |
+| **skill-creator**  | 技能创建工具 — 设计、构建和打包自定义技能          |
 
 - **模块化设计**：每个技能独立封装，易于管理和扩展
 - **渐进式加载**：只在需要时加载技能内容，节省上下文空间
@@ -551,9 +551,10 @@ ShitBot 支持灵活的角色系统，不同的角色具有不同的专业能力
 
 ### 👥 内置角色
 
-| 角色名称      | 说明                       |
-| --------- | ------------------------ |
-| **Coder** | 通用代码编写角色 — 支持多种编程语言和项目类型 |
+| 角色名称       | 说明                       |
+| ---------- | ------------------------ |
+| **Coder**  | 通用代码编写角色 — 支持多种编程语言和项目类型 |
+| **定时任务审查** | 执行前检查白名单、时间间隔、资源消耗、权限范围  |
 
 ### 🎨 角色特点
 
@@ -570,17 +571,11 @@ ShitBot 支持灵活的角色系统，不同的角色具有不同的专业能力
 
 ## 🛡️ 安全机制
 
-ShitBot 内置了完善的安全防护体系：
-
-| 安全层级         | 说明                       |
-| ------------ | ------------------------ |
-| **高危操作拦截**   | 禁止数据库删除、关机重启、提权操作、远程管道执行 |
-| **定时任务审查**   | 执行前检查白名单、时间间隔、资源消耗、权限范围  |
-| **文件删除保护**   | 任何删除操作需用户明确确认，定时任务中禁止删除  |
-| **API 密钥保护** | 配置文件中的密钥信息绝不向用户泄露        |
-| **禁止路径保护**   | 用户可配置禁止访问的文件路径           |
-| **提示注入防护**   | 过滤外部输入中的指令内容，防止提示注入攻击    |
-| **审计日志**     | 关键操作记录到 ERROR.md，支持事后追溯  |
+\| **文件删除保护**   | 任何删除操作需用户明确确认，定时任务中禁止删除  |
+\| **API 密钥保护** | 配置文件中的密钥信息绝不向用户泄露        |
+\| **禁止路径保护**   | 用户可配置禁止访问的文件路径           |
+\| **提示注入防护**   | 过滤外部输入中的指令内容，防止提示注入攻击    |
+\| **审计日志**     | 关键操作记录到 ERROR.md，支持事后追溯  |
 
 ***
 
@@ -664,9 +659,11 @@ ShitBot/
 ├── models.json                        # 支持的 AI 平台列表
 ├── pyproject.toml                     # 项目配置（含 CLI 入口定义）
 ├── requirements.txt                   # 依赖列表
+├── README.md                          # 主说明文档
 ├── README_CN.md                       # 中文说明文档
 ├── README_EN.md                       # 英文说明文档
 ├── shitbot.bat                        # Windows 快速启动脚本
+├── skills-lock.json                    # 技能锁定文件
 │
 ├── .shitbot/                          # ShitBot 核心数据目录
 │   ├── Self.example.txt               # 智能体信息模板（复制为 Self.txt 使用）
@@ -674,21 +671,18 @@ ShitBot/
 │   ├── docs/                          # 内置文档
 │   │   ├── ALL_TOOLS_GUIDE.md         # 完整工具指南
 │   │   ├── SEARCH_TOOLS.md            # 搜索工具指南
-│   │   ├── FILE_TOOLS.md              # 文件工具指南
-│   │   ├── COMMAND_TOOLS.md           # 命令行工具指南
-│   │   ├── EMAIL_TOOLS.md             # 邮件工具指南
-│   │   ├── EMAIL_READER_GUIDE.md      # 邮件读取指南
 │   │   ├── TIMER_TOOLS.md             # 定时器工具指南
 │   │   ├── AI_API_Platforms_*.md      # AI API 平台兼容性文档
 │   │   └── Write_Doc.md               # 文档编写指南
-│   ├── skills/                        # 技能目录
-│   │   ├── skill-creator/             # [内置] 技能创建工具
-│   │   ├── role-skill/                # [内置] 角色创建工具
+│   ├── skills/                        # 技能目录（仅内置基础技能，更多技能可通过 clawhub 安装）
 │   │   ├── clawhub/                   # [内置] ClawHub 技能商店
 │   │   ├── init_self/                 # [内置] 智能体初始化
-│   │   └── project-update/            # [内置] 项目更新工具
-│   ├── roles/                         # 角色目录
+│   │   ├── project-update/            # [内置] 项目更新工具
+│   │   ├── role-skill/                # [内置] 角色创建工具
+│   │   └── skill-creator/             # [内置] 技能创建工具
+│   ├── roles/                         # 角色目录（仅内置基础角色，更多角色可自定义创建）
 │   │   └── Coder/                     # [内置] 代码编写角色
+│   │   ├── FILE_TOOLS.md              # 文件工具指南
 │   ├── workfile/                      # 工作文件目录（占位文件，运行时自动填充）
 │   │   ├── NOTE.md                    # 笔记
 │   │   ├── TODO.md                    # 长期待办
@@ -705,6 +699,7 @@ ShitBot/
 │   ├── bocha.py                       # 博查搜索
 │   ├── tavily_api.py                  # Tavily 搜索
 │   ├── email_reader.py                # 邮件读取（IMAP）
+│   ├── mcp_client.py                  # MCP协议客户端（Model Context Protocol）
 │   ├── doc.py                         # 文档管理
 │   ├── memory_bot.py                  # 记忆机器人
 │   ├── playwiright.py                 # 浏览器自动化
@@ -720,6 +715,7 @@ ShitBot/
 │   └── config.py                      # 配置加载
 │
 ├── src/                               # 源代码目录
+│   ├── agent/                         # 智能体模块
 │   ├── ai.py                          # AI 客户端
 │   ├── bot.py                         # 机器人核心逻辑
 │   ├── cli.py                         # 命令行界面（CLI）
@@ -728,13 +724,15 @@ ShitBot/
 │   ├── prompt.py                      # 提示词管理
 │   ├── terminal.py                    # 终端界面
 │   ├── tool.py                        # 工具定义和执行
+│   ├── tools/                         # 工具注册
+│   ├── tool_registry.py               # 工具注册表
 │   ├── ui_components.py               # UI 组件
 │   ├── log.py                         # 日志管理
 │   ├── token_tracker.py               # Token 追踪
 │   └── workflows.py                   # 工作流管理
 │
 ├── init_project.py                    # 项目初始化脚本
-└── skills-lock.json                    # 技能锁定文件
+└── test/                              # 测试文件目录
 ```
 
 ***
@@ -824,8 +822,4 @@ playwright install chromium
 
 ***
 
-<div align="center">
-
 **Made with ❤️ by ShitBot Team**
-
-</div>

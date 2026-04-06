@@ -87,7 +87,7 @@ class AIClient:
             return None
 if __name__ == "__main__":
     prompt = BotPromt.from_config()
-    ai = AIClient(prompt=prompt.get_prompt("WebAgent.txt"))
+    ai = AIClient(prompt=prompt.get_prompt("WebAgent.md"))
     ai.init_prompt()
     message = Message(role="user", content="你好")
     print(ai.chat(message))

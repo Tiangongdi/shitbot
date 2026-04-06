@@ -10,13 +10,13 @@ sys.path.insert(0, str(project_root))
 from src import main
 from config.config import setup_wizard
 from src.terminal import check_and_run_setup_wizard
-from src.bot import Bot
+from src.agent.bot import Bot
 from src.memory import get_shared_memory
 
 
 @click.command()
 @click.option("-m", "--chat", help="单次对话内容")
-def cli(chat):
+def main_cli(chat):
     """
     ShitBot - 一个功能强大的 AI 智能助手终端应用
     
@@ -59,13 +59,19 @@ def config():
     """
     setup_wizard()
 
-# 创建命令组
-cli_group = click.Group()
-cli_group.add_command(cli, name="shitbot")
-cli_group.add_command(config)
+
+# 创建命令组，默认命令是 main_cli
+class DefaultGroup(click.Group):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    def main(self, *args, **kwargs):
+        if not args:
+            sys.argv.insert(1, 'main')
+        super().main(*args, **kwargs)
 
 
-
+cli = DefaultGroup(commands={'main': main_cli, 'config': config})
 
 if __name__ == '__main__':
-    cli_group()
+    cli()

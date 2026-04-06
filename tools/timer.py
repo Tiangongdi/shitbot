@@ -284,7 +284,7 @@ class Timer:
             return
         
         try:
-            from src.bot import Bot
+            from src.agent.bot import Bot
             bot = Bot(if_user_or_timer=False)
             bot.init_prompt()
             self._executor.set_bot(bot)

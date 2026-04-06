@@ -7,8 +7,8 @@ import os
 import platform
 import time
 from typing import List
-from src.ai import Message
-from tools.memory_bot import MemoryBot
+from src.agent.ai import Message
+from src.agent.memory_bot import MemoryBot
 from src.prompt import BotPromt
 from config.config import load_config
 from tools.doc import Doc  
@@ -84,36 +84,31 @@ class SharedMemory:
             return
         content = self.memory_bot.save_memory(self.messages)
         self.messages.clear()
-        prompt=self.prompt.get_prompt("Bot.txt")
+        prompt=self.prompt.get_prompt("Bot.md")
         msg = Message(
             role="system",
             content=prompt
         )   
         self.add_message(msg)
-        prompt = self.prompt.get_prompt("Safe.txt")
+        prompt = self.prompt.get_prompt("Safe.md")
         msg = Message(
             role="system",
             content=prompt
         )   
         self.add_message(msg)
-        prompt = self.prompt.get_prompt("Self.txt")
+        prompt = self.prompt.get_prompt("Self.md")
         msg = Message(
             role="system",
             content=prompt
         )   
         self.add_message(msg)
         
-        prompt = self.prompt.get_prompt("Command.txt")
-        msg = Message(
-            role="system",
-            content=prompt
-        )   
-        self.add_message(msg)
         # 前面添加记忆
-        self.add_message(Message(
-            role="system",
-            content=content
-        ))
+        if content:
+            self.add_message(Message(
+                role="system",
+                content=content
+            ))
 
         set_msg = self.init_system_prompt()
         if set_msg:
@@ -133,7 +128,7 @@ class SharedMemory:
         doc_list = str(self.doc.value)
         skill_list = str(self.tools.skill.skill_dict)
         role_list = str(self.tools.role.role_dict)
-        prompt=self.prompt.get_prompt("Sys.txt").format(
+        prompt=self.prompt.get_prompt("Sys.md").format(
         stop_file=self.config.stop.file,
         time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         os = Os,

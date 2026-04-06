@@ -12,7 +12,7 @@ import asyncio
 import json
 from typing import Dict, Any, Optional, List
 from tools.playwiright import SmartWebExtractor, BrowserTools, ExtractedContent
-from src.ai import AIClient, Message
+from src.agent.ai import AIClient, Message
 from src.prompt import BotPromt
 
 
@@ -107,7 +107,7 @@ class WebBot:
     
     def _build_system_prompt(self) -> str:
         """构建系统提示词，包含工具调用格式说明"""
-        base_prompt = self.prompt.get_prompt("WebAgent.txt")
+        base_prompt = self.prompt.get_prompt("WebAgent.md")
         
         tool_instructions = """
 
@@ -133,6 +133,7 @@ class WebBot:
 - extract: 提取网页结构化内容，参数: {"url": "https://example.com"}
 - scroll: 滚动页面，参数: {"distance": 500, "steps": 1}
 - screenshot: 截图，参数: {"path": "screenshot.png", "full_page": false}
+- close: 关闭浏览器，参数: {}
 
 如果需要调用多个工具，请按顺序列出多个工具调用块。
 当任务完成时，直接返回最终结果，不需要工具调用块。
@@ -171,6 +172,7 @@ class WebBot:
             "extract": self.extract,
             "scroll": self.scroll,
             "screenshot": self.screenshot,
+            "close": self.close,
         }
         
         if tool_name not in tool_map:
@@ -243,6 +245,26 @@ class WebBot:
         except Exception as e:
             return f"表单填写失败: {str(e)}"
     
+    async def close(self, args: Dict[str, Any]) -> str:
+        """
+        关闭浏览器
+        Args:
+            args: 空字典
+        Returns:
+            操作结果
+        """
+        try:
+            await self.browser.close()
+            return json.dumps({
+                "success": True,
+                "message": "浏览器已成功关闭"
+            }, ensure_ascii=False)
+        except Exception as e:
+            return json.dumps({
+                "success": False,
+                "error": str(e),
+                "message": f"关闭浏览器失败: {str(e)}"
+            }, ensure_ascii=False)
     async def submit(self, args: Dict[str, Any]) -> str:
         """
         提交表单
@@ -300,7 +322,7 @@ class WebBot:
             question = args.get("question", "")
             result = await self.extractor.extract(url)
             
-            system_prompt = self.prompt.get_prompt("WebAgent.txt")
+            system_prompt = self.prompt.get_prompt("WebAgent.md")
             messages = [
                 Message(role="system", content=system_prompt),
                 Message(role="user", content=question),

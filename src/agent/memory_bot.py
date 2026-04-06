@@ -1,6 +1,6 @@
 
 from typing import List
-from src.ai import Message,AIClient
+from src.agent.ai import Message,AIClient
 from src.prompt import BotPromt
 import json
 from datetime import datetime
@@ -39,7 +39,9 @@ tools_definition = [
 ]
 class memrry_tool:
     def __init__(self, memory_file: str = "memory.json"):
-        self.memory_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", memory_file)
+        # 计算项目根目录：src/agent/memory_bot.py -> src/agent -> src -> 项目根目录
+        self.base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.memory_file = os.path.join(self.base_path, ".shitbot", "datas", memory_file)
         self.memory_doc = self.load_memory()
     def load_memory(self):
         try:
@@ -65,13 +67,16 @@ class memrry_tool:
     def get_one_memory_doc(self,name):
         """获取指定名称的内存文档"""
         try:
-            with open(f"../memory/{name}.json", "r", encoding="utf-8") as f:
+            memory_path = os.path.join(self.base_path, ".shitbot", "memory", f"{name}.json")
+            with open(memory_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except FileNotFoundError:
             return {}
 class MemoryBot:
     def __init__(self, memory_file: str = "memory.json"):
-        self.memory_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".shitbot", "datas", memory_file)
+        # 计算项目根目录：src/agent/memory_bot.py -> src/agent -> src -> 项目根目录
+        self.base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.memory_file = os.path.join(self.base_path, ".shitbot", "datas", memory_file)
         self.memory_doc = self.load_memory()
         self.prompt = BotPromt()
         self.ai = AIClient(
@@ -86,53 +91,68 @@ class MemoryBot:
             return {}
     def save_memory(self,memory:List[Message]):
         if len(memory) == 0:
-            return
+            return ""
         old_memory = memory.copy() # 备份原始内存
-        memory.extend([
-            Message(role="system", content=self.prompt.get_prompt("MemoryBot.txt")),
-            Message(role="user", content="Please generate a memory summary based on the above conversation records and prompt requirements.Please do not use any tools, only summarize the above history records.")
-        ]) 
-        response = self.ai.chat(memory)
-        if response is None:
-            return
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        content = response.choices[0].message.content
-        self.memory_doc[timestamp]=content
-        # 将old_memory转换为可序列化的字典格式
-        serializable_memory = []
-        for msg in old_memory:
-            msg_dict = {
-                "role": msg.role,
-                "content": msg.content
-            }
-            if msg.tool_calls:
-                tool_calls_list = []
-                for tool_call in msg.tool_calls:
-                    tool_call_dict = {
-                        "id": tool_call.id,
-                        "type": tool_call.type,
-                        "function": {
-                            "name": tool_call.function.name,
-                            "arguments": tool_call.function.arguments
+        
+        # 尝试生成记忆摘要
+        try:
+            memory.extend([
+                Message(role="system", content=self.prompt.get_prompt("MemoryBot.md")),
+                Message(role="user", content="Please generate a memory summary based on the above conversation records and prompt requirements.Please do not use any tools, only summarize the above history records.")
+            ]) 
+            response = self.ai.chat(memory)
+            if response and hasattr(response, 'choices') and len(response.choices) > 0:
+                content = response.choices[0].message.content
+                self.memory_doc[timestamp] = content
+            else:
+                content = "[AI 调用失败，使用原始对话作为记忆]"
+                self.memory_doc[timestamp] = content
+        except Exception as e:
+            print(f"生成记忆摘要失败: {e}")
+            content = "[生成摘要失败，使用原始对话作为记忆]"
+            self.memory_doc[timestamp] = content
+        
+        # 保存原始对话记录
+        try:
+            # 将old_memory转换为可序列化的字典格式
+            serializable_memory = []
+            for msg in old_memory:
+                msg_dict = {
+                    "role": msg.role,
+                    "content": msg.content
+                }
+                if msg.tool_calls:
+                    tool_calls_list = []
+                    for tool_call in msg.tool_calls:
+                        tool_call_dict = {
+                            "id": tool_call.id,
+                            "type": tool_call.type,
+                            "function": {
+                                "name": tool_call.function.name,
+                                "arguments": tool_call.function.arguments
+                            }
                         }
-                    }
-                    tool_calls_list.append(tool_call_dict)
-                msg_dict["tool_calls"] = tool_calls_list
-            if msg.tool_call_id:
-                msg_dict["tool_call_id"] = msg.tool_call_id
-            serializable_memory.append(msg_dict)
-            return content
-        memory_path = f"./.shitbot/memory/{timestamp}.json"
-        os.makedirs(os.path.dirname(memory_path), exist_ok=True)
-        with open(memory_path, "w", encoding="utf-8") as f:
-            json.dump(serializable_memory, f, ensure_ascii=False, indent=4)
-        os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
-        with open(self.memory_file, "w", encoding="utf-8") as f:
-            json.dump(self.memory_doc, f, ensure_ascii=False, indent=4)
+                        tool_calls_list.append(tool_call_dict)
+                    msg_dict["tool_calls"] = tool_calls_list
+                if msg.tool_call_id:
+                    msg_dict["tool_call_id"] = msg.tool_call_id
+                serializable_memory.append(msg_dict)
+            memory_path = os.path.join(self.base_path, ".shitbot", "memory", f"{timestamp}.json")
+            os.makedirs(os.path.dirname(memory_path), exist_ok=True)
+            with open(memory_path, "w", encoding="utf-8") as f:
+                json.dump(serializable_memory, f, ensure_ascii=False, indent=4)
+            os.makedirs(os.path.dirname(self.memory_file), exist_ok=True)
+            with open(self.memory_file, "w", encoding="utf-8") as f:
+                json.dump(self.memory_doc, f, ensure_ascii=False, indent=4)
+        except Exception as e:
+            print(f"保存记忆文件失败: {e}")
+        
+        return content
     def get_memory(self,q:str):
         """获取指定时间戳的内存"""
         message=[
-            Message(role="system", content=self.prompt.get_prompt("MemoryBot.txt")),
+            Message(role="system", content=self.prompt.get_prompt("MemoryBot.md")),
             Message(role="user", content=q)
         ]
         response = self.ai.chat(message)

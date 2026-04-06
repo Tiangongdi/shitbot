@@ -3,10 +3,12 @@ from re import S
 import time
 import asyncio
 from typing import Optional, List
-from src.ai import AIClient,Message
+from src.agent.ai import AIClient,Message
 from src.prompt import BotPromt  
 from config.config import load_config,load_settings
-from src.tool import Tool,get_tools_definition
+from src.tool_registry import registry
+from tools.definition.tools_definition import get_tools_definition
+from src.tool import Tool
 from src.memory import SharedMemory, get_shared_memory
 from src.workflows import Workflow
 import platform
@@ -18,7 +20,7 @@ from src.ui_components import TerminalUI
 from src.token_tracker import TokenTracker
 class Bot:
     """AI 智能体"""
-    def __init__(self, shared_memory: Optional[SharedMemory] = None, if_user_or_timer: bool = True):
+    def __init__(self, shared_memory: Optional[SharedMemory] = None, if_user_or_timer: bool = True,if_user_or_subagent: bool = True):
         """
         初始化 Bot
         
@@ -28,8 +30,10 @@ class Bot:
         """
         self.config = load_config()
         self.prompt = BotPromt()
+        self.if_user_or_timer = if_user_or_timer
+        self.if_user_or_subagent = if_user_or_subagent  
         self.ai = AIClient(
-            tools=get_tools_definition()
+            tools=registry.get_tools_definition(if_not_timer=self.if_user_or_timer,if_not_subagent=self.if_user_or_subagent)
         )
         self.tools = Tool(shared_memory)
         self.shared_memory = shared_memory
@@ -39,10 +43,8 @@ class Bot:
         self.doc = Doc()
         self.terminal_ui = TerminalUI()
         self.tools.set_terminal_ui(self.terminal_ui)
-        self.if_user_or_timer = if_user_or_timer
         self.should_stop = False
         self.token_tracker = TokenTracker()
-        self.conversation_count = 0 # 对话次数
         self.settings = load_settings()
         self.workflow = Workflow()
     
@@ -55,37 +57,32 @@ class Bot:
         return self.should_stop
     def init_prompt(self):
         """初始化智能体提示"""
-        prompt=self.prompt.get_prompt("Bot.txt")
+        prompt=self.prompt.get_prompt("Bot.md")
+        msg = Message(
+            role="system",
+            content=prompt
+        )   
+        self._add_message(msg)
+        
+        prompt = self.prompt.get_prompt("Safe.md")
         msg = Message(
             role="system",
             content=prompt
         )   
         self._add_message(msg)
         # 加载工作流文件
-        workflow_prompt = self.workflow.get_workflow_file()
+        if_bot = self.if_user_or_subagent and self.if_user_or_timer # 是否为普通智能体
+        workflow_prompt = self.workflow.get_workflow_file(if_bot=if_bot)
         msg = Message(
             role="system",
             content=workflow_prompt
         )   
         self._add_message(msg)
 
-        prompt = self.prompt.get_prompt("Safe.txt")
-        msg = Message(
-            role="system",
-            content=prompt
-        )   
-        self._add_message(msg)
         set_msg = self.init_system_prompt()
         self._add_message(set_msg)
         
-        prompt = self.prompt.get_prompt("Self.txt")
-        msg = Message(
-            role="system",
-            content=prompt
-        )   
-        self._add_message(msg)
-        
-        prompt = self.prompt.get_prompt("Command.txt")
+        prompt = self.prompt.get_prompt("Self.md")
         msg = Message(
             role="system",
             content=prompt
@@ -99,15 +96,14 @@ class Bot:
         """
         await self.tools.init_mcp()
         mcp_tools = self.tools.get_mcp_tools_definition()
+        
+        self.ai.tools = registry.get_tools_definition(if_not_timer=self.if_user_or_timer,if_not_subagent=self.if_user_or_subagent)
+        self.ai.tools = get_tools_definition(if_not_timer=self.if_user_or_timer,if_not_subagent=self.if_user_or_subagent)
         if mcp_tools:
             # 合并内置工具和 MCP 工具
-            from src.tool import get_tools_definition
-            self.ai.tools = get_tools_definition() + mcp_tools
+            self.ai.tools.extend(mcp_tools)
             if self.terminal_ui:
                 self.terminal_ui.system(f"[MCP] 已加载 {len(mcp_tools)} 个 MCP 工具")
-        else:
-            from src.tool import get_tools_definition
-            self.ai.tools = get_tools_definition()
     def init_system_prompt(self):
         """初始化系统提示"""
         # 获取当前操作系统为Windows
@@ -120,7 +116,7 @@ class Bot:
         doc_list = str(self.doc.value)
         skill_list = str(self.tools.skill.skill_dict)
         role_list = str(self.tools.role.role_dict)
-        prompt=self.prompt.get_prompt("Sys.txt").format(
+        prompt=self.prompt.get_prompt("Sys.md").format(
         stop_file=self.config.stop.file,
         time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
         os = Os,
@@ -137,12 +133,7 @@ class Bot:
         """与智能体交互"""
         # 对话次数超过最大次数，且开启token保存模式
         # 清空记忆
-        # 重置token使用记录
-        if self.conversation_count > self.settings.max_conversation_count and self.settings.token_saving_mode:
-            self.conversation_count = 0
-            self.clear_memory() # 清空记忆  
-        
-        self.conversation_count += 1
+        # 重置token使用记录 
         set_msg = self.init_system_prompt()
         self._set_memory(set_msg,1)
         msg = Message(
@@ -233,6 +224,8 @@ class Bot:
             else:
                 break
         
+        if self.token_tracker.current_session.total_tokens > self.settings.max_token_count and self.settings.token_saving_mode:
+            self.clear_memory() # 清空记忆 
         return message.content
     
     def _add_message(self, message: Message):

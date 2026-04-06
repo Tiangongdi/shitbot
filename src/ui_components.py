@@ -33,11 +33,12 @@ class WelcomeScreen:
 """
         welcome_text = f"""[bold green]{ascii_art}[/bold green]
 
-[bold cyan]ShitBot - 你的 AI 编程助手[/bold cyan]
+[bold cyan]ShitBot - Your life bot[/bold cyan]
 
-[dim white] * 输入 [/dim white][yellow bold]/help[/yellow bold][dim white] 查看所有可用命令[/dim white]
-[dim white] * 输入 [/dim white][yellow bold]/workflow[/yellow bold][dim white] 切换工作模式[/dim white]
-[dim white] * 按 [/dim white][yellow bold]Esc[/yellow bold][dim white] 终止当前任务[/dim white]
+[dim white] ● 输入 [/dim white][yellow bold]/help[/yellow bold][dim white] 查看所有可用命令[/dim white]
+[dim white] ● 输入 [/dim white][yellow bold]/workflow[/yellow bold][dim white] 切换工作模式[/dim white]
+[dim white] ● 输入 [/dim white][yellow bold]/exit[/yellow bold][dim white] 退出程序[/dim white]
+[dim white] ● 按 [/dim white][yellow bold]Esc[/yellow bold][dim white] 终止当前任务[/dim white]
 """
 
         # 使用 Panel 美化显示
@@ -81,11 +82,11 @@ class MessagePanel:
     
     def error(self, message: str):
         """显示错误消息"""
-        self.console.print("[red]error >[/red] "+message)
+        self.console.print(f"[red]● {message}[/red] ")
     
     def system(self, message: str):
         """显示系统消息"""
-        self.console.print("[yellow]system >[/yellow] "+message)
+        self.console.print(f"[yellow]● {message}[/yellow] ")
     
     def info(self, message: str):
         """显示信息消息"""
@@ -93,7 +94,7 @@ class MessagePanel:
     
     def success(self, message: str):
         """显示成功消息"""
-        self.console.print("[green]success >[/green] "+message)
+        self.console.print(f"[green]● {message}[/green]")
     
     def tool(self, message: str):
         """显示工具消息"""

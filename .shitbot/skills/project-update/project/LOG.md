@@ -128,3 +128,27 @@
 大史 (AI助手)
 
 ---
+
+---
+
+## 2026-04-06 更新记录
+
+### 更新时间
+2026-04-06 15:24
+
+### 更新内容
+1. **修改CLI入口为单命令**
+   - 修改 `pyproject.toml` 入口点从 `src.cli:cli_group` 改为 `src.cli:cli`
+   - 重构 `src/cli.py` 使用自定义 `DefaultGroup` 类自动默认到main命令
+   - 现在支持：
+     - `shitbot` → 直接启动交互式对话（只需一个命令）
+     - `shitbot -m "查询内容"` → 单次对话模式
+     - `shitbot config` → 配置向导功能保持正常
+
+### 用户要求
+用户发现启动需要输入 `shitbot shitbot`，要求改为只需输入 `shitbot` 就能直接启动
+
+### 更新人员
+大史 (AI助手)
+
+---

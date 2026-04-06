@@ -5,12 +5,12 @@ from config.config import load_config
 
 class BotPromt:
 
-    def get_prompt(self, prompt_file: str = "Bot.txt", prompt_dir: str = None) -> str:
+    def get_prompt(self, prompt_file: str = "Bot.md", prompt_dir: str = None) -> str:
         """
         获取提示词内容并替换变量
         
         Args:
-            prompt_file: 提示词文件名，默认为 "Bot.txt"
+            prompt_file: 提示词文件名，默认为 "Bot.md"
             prompt_dir: 提示词目录路径，默认为 "promt" 目录
         
         Returns:
@@ -48,11 +48,8 @@ class BotPromt:
         prompts = {}
         
         for filename in os.listdir(prompt_dir):
-            if filename.endswith('.txt'):
+            if filename.endswith('.txt') or filename.endswith('.md'):
                 prompt_name = os.path.splitext(filename)[0]
                 prompts[prompt_name] = self.get_prompt(filename, prompt_dir)
         
         return prompts  
-if __name__ == "__main__":
-    promt = BotPromt()
-    print(promt.get_prompt("Bot.txt").format(name="BOT", user="林粒", user_set="看看"))  

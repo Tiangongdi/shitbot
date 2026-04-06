@@ -503,8 +503,8 @@ def setup_wizard(config_path: str = "config.yaml"):
 @dataclass
 class SettingsConfig:
     """用户偏好设置配置"""
-    default_workflow: str = "SOLE"
-    max_conversation_count: int = 10
+    default_workflow: str = "sole"
+    max_token_count: int = 500000    
     token_saving_mode: bool = False
     created_at: str = ""
 
@@ -532,8 +532,8 @@ def load_settings(settings_path: Optional[str] = None) -> SettingsConfig:
         settings_data = json.load(f)
     
     return SettingsConfig(
-        default_workflow=settings_data.get('default_workflow', 'SOLE'),
-        max_conversation_count=settings_data.get('max_conversation_count', 10),
+        default_workflow=settings_data.get('default_workflow', 'sole'),
+        max_token_count=settings_data.get('max_token_count', 500000),
         token_saving_mode=settings_data.get('token_saving_mode', False),
         created_at=settings_data.get('created_at', '')
     )
@@ -556,7 +556,7 @@ def save_settings(settings: SettingsConfig, settings_path: Optional[str] = None)
     
     settings_data = {
         'default_workflow': settings.default_workflow,
-        'max_conversation_count': settings.max_conversation_count,
+        'max_token_count': settings.max_token_count,
         'token_saving_mode': settings.token_saving_mode,
         'created_at': settings.created_at
     }
