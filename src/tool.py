@@ -4,6 +4,7 @@ import asyncio
 import json
 import inspect
 import os
+import re
 from typing import Optional, Dict, Any
 from src.tool_registry import registry
 from tools.doc import Doc
@@ -835,21 +836,54 @@ class Tool:
         self.timer.daily_at(description=task, hour=hour, minute=minute)
         return f"定时任务已添加：每天 {hour}:{minute} 执行 {task}"
 
-    @registry.tool("发布给子智能体的任务，该工具会创建一个拥有独立记忆的智能体，子智能体会根据任务描述执行任务，执行完任务会返回任务报告")
-    def subagent_task(self, task: str, role: str) -> str:
+    @registry.tool("发布给子智能体的任务，该工具会给指定的子智能体分配一个任务，任务会在后台并行执行，请在分配完所有任务后调用 wait_all_subagent_tasks 等待全部完成")
+    def subagent_task(self, task: str, role_id: str) -> str:
         """
-        发布给子智能体的任务
+        发布给子智能体的任务并行执行
 
         Args:
             task: 要执行的任务描述
-            role: 要执行任务的子智能体的人告诉他在执行任务前阅读哪个role库里面的人设,如果没有相关的人设,那就在role文件夹里面新建一个Role文件,方便重复使用
+            role_id: 要执行任务的子智能体的角色ID
         """
         if not task:
             return "请提供任务描述"
-        if not role:
-            return "请提供角色"
-        result = self.subagent.run_background_task(role, task, self.shared_memory)
+        if not role_id:
+            return "请提供角色ID"
+        result = self.subagent.run_background_task(role_id, task, self.shared_memory)
         return result
+    @registry.tool("创建子智能体，子智能体可以重复使用，不限制创建数量")
+    def create_subagent(self,role: str, description: str)  -> str:
+        """创建子智能体
+
+        Args:
+            role: 子智能体的角色,引用已有的 role 文档和 skill 文档
+            description: 子智能体的描述
+        Returns:
+            str: 子智能体的角色ID
+        """
+        result = self.subagent.create_subagent(role, description)
+        return result
+
+    @registry.tool("等待所有子智能体任务完成，所有任务完成后才会返回，之后才能继续使用其他工具")
+    def wait_all_subagent_tasks(self) -> str:
+        """等待所有子智能体任务完成
+
+        Returns:
+            str: 等待完成的总结报告
+        """
+        return self.subagent.wait_all_tasks()
+
+    @registry.tool("获取所有子智能体的详细信息")
+    def get_subagent(self) -> str:
+        """获取所有子智能体的详细信息
+
+        Args:
+            None
+
+        Returns:
+            str: 所有子智能体的详细信息
+        """
+        return self.subagent.get_subagent()  
 
     # ==================== 私有辅助方法 ====================
 
@@ -910,7 +944,22 @@ class Tool:
                     func = getattr(self, tool_name)
                     
                     # 执行：支持异步和同步方法
+                    # 检查是否是协程函数（处理绑定方法的情况）
+                    import inspect
+                    
+                    # 检查绑定方法的 __func__ 属性
+                    is_coroutine = False
                     if inspect.iscoroutinefunction(func):
+                        is_coroutine = True
+                    elif hasattr(func, '__func__') and inspect.iscoroutinefunction(func.__func__):
+                        is_coroutine = True
+                    
+                    # 直接检查函数名是否为异步函数
+                    async_functions = ['search_web', 'webbot_task', 'extract_and_analyze', 'search_and_extract']
+                    if tool_name in async_functions:
+                        is_coroutine = True
+                    
+                    if is_coroutine:
                         # delete_file 需要特殊处理 if_user 参数
                         if tool_name == "delete_file":
                             args["if_user"] = if_user

@@ -69,24 +69,28 @@ class ToolRegistry:
         
         properties = {}
         required = []
-        
+
         for param_name, param in signature.parameters.items():
+            # 跳过 self 参数（类实例方法的第一个参数）
+            if param_name == 'self':
+                continue
+
             # 获取参数类型
             param_type = type_hints.get(param_name, Any)
             json_type = TYPE_MAP.get(param_type, "string")
-            
+
             # 获取参数默认值注释（从docstring中提取，或者使用参数名）
             param_doc = self._extract_param_doc(func.__doc__ or "", param_name)
-            
+
             properties[param_name] = {
                 "type": json_type,
                 "description": param_doc or param_name
             }
-            
+
             # 如果没有默认值，标记为必填
             if param.default == inspect._empty:
                 required.append(param_name)
-            
+
             # 如果有默认值，添加到schema中
             else:
                 properties[param_name]["default"] = param.default
@@ -149,8 +153,8 @@ class ToolRegistry:
         
         # 子智能体相关工具
         if not if_not_subagent:
-            # 子智能体上下文，不包含subagent_task
-            tools = [t for t in tools if t["function"]["name"] != "subagent_task"]
+            # 子智能体上下文，不包含create_subagent工具
+            tools = [t for t in tools if t["function"]["name"] != "create_subagent"]
         
         return tools
     

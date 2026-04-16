@@ -88,6 +88,42 @@ class Bot:
             content=prompt
         )   
         self._add_message(msg)
+        if self.if_user_or_subagent:
+            prompt = """
+            子智能体是独立的智能体，可以并行执行多个任务。正确的工作流程是：
+
+            1. 使用 `create_subagent` 创建需要的子智能体，每个子智能体负责一个专业角色（子智能体可以重复使用，不限制创建数量）
+               - `role` 参数应该引用已有的 role 文档，不要直接写完整角色描述
+               - 如果没有需要的 role 文档，先创建对应的文档再引用
+            2. 使用 `subagent_task` 给每个子智能体分配任务，所有任务会在后台并行执行
+               - 每次分配都会立即返回，任务在后台同时运行
+               - **限制：同时运行的任务最多 10 个**，超出限制需要等待部分完成才能继续
+            3. 所有任务分配完后，必须调用 `wait_all_subagent_tasks` 等待全部完成
+               - 此调用会阻塞直到所有子智能体任务完成
+               - 只有所有任务完成后，你才能继续使用其他工具进行后续处理
+            4. 任务完成后，结果已经自动添加到共享记忆中，你可以阅读并总结结果
+
+            工作流程总结：创建子智能体 → 分配所有任务（并行，最多10个同时运行） → 等待全部完成 → 处理结果
+
+            如果你需要具体的操作文档，你可以参考 .shitbot/docs/SUBAGENT.md 文件。
+            """
+            msg = Message(
+                role="system",
+                content=prompt
+            )
+            self._add_message(msg)
+        else:
+            prompt = """
+            子智能体是一个独立的智能体，它可以执行主智能体布置的任务。
+            因为你也是一个子智能体，所以你可以调用其他子智能体的工具。
+            但是，你不能使用 `create_subagent` 工具（防止递归创建）。
+            如果你需要具体的操作文档，你可以参考 .shitbot/docs/SUBAGENT.md 文件。
+            """
+            msg = Message(
+                role="system",
+                content=prompt
+            )
+            self._add_message(msg)            
     
     async def init_mcp(self):
         """
@@ -98,7 +134,6 @@ class Bot:
         mcp_tools = self.tools.get_mcp_tools_definition()
         
         self.ai.tools = registry.get_tools_definition(if_not_timer=self.if_user_or_timer,if_not_subagent=self.if_user_or_subagent)
-        self.ai.tools = get_tools_definition(if_not_timer=self.if_user_or_timer,if_not_subagent=self.if_user_or_subagent)
         if mcp_tools:
             # 合并内置工具和 MCP 工具
             self.ai.tools.extend(mcp_tools)

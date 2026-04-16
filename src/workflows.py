@@ -6,6 +6,7 @@ WORKFLOW_PATHS = {
     "coder": "CODER.md",
     "plan": "PLAN.md",
     "sole": "SOLE.md",      
+    "team": "TEAM.md"
 }
 
 class Workflow:

@@ -365,9 +365,9 @@ class ShitBotTerminal:
                 else:
                     self.should_stop = False
                     self.bot.set_stop_flag(False)
-                    
+
                     escape_listener.start()
-                    
+
                     try:
                         user_input = self.prompt_command(user_input)
                         res = await self.bot.chat(user_input, ui=self.ui)
@@ -386,11 +386,12 @@ class ShitBotTerminal:
                 self.ui.system("\n检测到中断信号，输入 /exit 退出")
             except Exception as e:
                 self.ui.error(f"发生错误: {e}")
-    
+
+
     async def _monitor_escape_key(self):
         """后台任务：监听Esc键"""
         import msvcrt
-        
+
         while not self.should_stop:
             try:
                 if msvcrt.kbhit():

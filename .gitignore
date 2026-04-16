@@ -1,34 +1,10 @@
-<<<<<<< HEAD
 # ========================
 # Python
 # ========================
-=======
-# Python
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-<<<<<<< HEAD
-*.egg-info/
-*.egg
-dist/
-build/
-*.whl
-
-# ========================
-# 虚拟环境
-# ========================
-code_venv/
-shitbot_env/
-venv/
-.venv/
-env/
-
-# ========================
-# IDE / 编辑器
-# ========================
-=======
 .Python
 build/
 develop-eggs/
@@ -43,25 +19,30 @@ sdist/
 var/
 wheels/
 *.egg-info/
+*.egg
 .installed.cfg
 *.egg
+*.whl
 
-# Virtual Environment
+# ========================
+# 虚拟环境
+# ========================
 shitbot_env/
 code_venv/
 venv/
 ENV/
 env/
+.venv/
 
-# IDE
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
+# ========================
+# IDE / 编辑器
+# ========================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-<<<<<<< HEAD
 # ========================
 # 系统文件
 # ========================
@@ -74,46 +55,54 @@ Desktop.ini
 # ========================
 *.log
 logs/
+Logs/
 
 # ========================
-# 环境变量 / 配置（含敏感信息）
+# 配置 / 敏感信息
 # ========================
 config.yaml
 .env
 .env.*
 !.env.example
+!config.yaml.example
 
 # ========================
-# ShitBot 运行时数据（不上传）
+# ShitBot 运行时数据，不上传
 # ========================
 .shitbot/workfile/
 .shitbot/memory/
 .shitbot/logs/
 .shitbot/datas/
 .shitbot/workflows/
+.shitbot/Self.txt
+.shitbot/Bot.txt
+.shitbot/MemoryBot.txt
+.shitbot/Sys.txt
+.shitbot/WebAgent.txt
 
 # ========================
-# ShitBot 用户安装的技能（仅保留内置技能）
+# ShitBot 用户安装的技能，框架技能不在这里，用户技能不都上传
 # ========================
-# 内置技能（保留上传）:
-#   clawhub, init_self, project-update, role-skill, skill-creator
-# 其余技能为用户自行安装/添加，不上传
+.shitbot/skills/clawhub/
 .shitbot/skills/docx/
 .shitbot/skills/find_skill/
 .shitbot/skills/github-uploader/
 .shitbot/skills/humanizer/
+.shitbot/skills/init_self/
+.shitbot/skills/project-update/
 .shitbot/skills/ppt-generator/
+.shitbot/skills/role-skill/
 .shitbot/skills/self-improving-agent/
+.shitbot/skills/skill-creator/
 .shitbot/skills/skill-vetter-1.0.0/
 .shitbot/skills/summarize/
 .shitbot/skills/ui-ux-pro-max/
+.shitbot/skills/yupi-skill/
 
 # ========================
-# ShitBot 用户创建的角色（仅保留内置角色）
+# ShitBot 用户创建的角色，框架角色不在这里，用户角色不都上传
 # ========================
-# 内置角色（保留上传）:
-#   Coder
-# 其余角色为用户自行创建，不上传
+.shitbot/roles/Coder/
 .shitbot/roles/GitHubUploader/
 .shitbot/roles/MarketAnalyst/
 .shitbot/roles/SpringBootCoder/
@@ -126,7 +115,7 @@ config.yaml
 .psync
 
 # ========================
-# 模型缓存 / 大文件
+# 模型文件 / 数据
 # ========================
 *.bin
 *.h5
@@ -146,36 +135,16 @@ temp/
 tmp/
 
 # ========================
-# ShitBot 用户个性化文件（上传模板，隔离实际文件）
+# 项目本地额外忽略
 # ========================
-.shitbot/Self.txt
-.shitbot/Bot.txt
-.shitbot/MemoryBot.txt
-.shitbot/Sys.txt
-.shitbot/WebAgent.txt
-=======
-# Logs
-Logs/
-*.log
+.learnings/
+nul
+*.png
+!docs/*.png
 
-# Memory
-memory/
-memory.json
 
-# Timer
-timer.json
+# Incorrectly placed shitbot data in src
+src/.shitbot/
 
-# Config with sensitive data
-config.yaml
-
-# Keep example config
-!config.yaml.example
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.bak
->>>>>>> b7254eb9319e9c3ea45659b53e8dae5bbc891ab7
+# Code review reports (temporary, not needed in repo)
+code_review*.md
